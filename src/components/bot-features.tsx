@@ -46,7 +46,7 @@ export function BotFeaturesSection() {
 
   return (
     <section className="relative overflow-hidden px-6 py-24 md:px-12 md:py-32 lg:px-24">
-      {/* Premium layered background */}
+
       <div
         className="pointer-events-none absolute inset-0"
         style={{

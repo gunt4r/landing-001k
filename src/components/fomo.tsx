@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 export function FomoSection() {
   return (
     <section className="relative overflow-hidden px-6 py-32 md:px-12 md:py-40 lg:px-24">
-      {/* Premium depth gradient */}
+
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -22,11 +22,11 @@ export function FomoSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          Ты можешь продолжать думать, что ничего не происходит и делать вид, что тебя это не затронет.
+          Вы можете считать, что происходящее вас не затронет.
           {' '}
           <br />
           {' '}
-          Или разобраться в правилах игры и минимизировать риск.
+          Либо внимательно разобраться в правилах и осознанно снизить возможные риски.
         </motion.p>
 
         <motion.a
