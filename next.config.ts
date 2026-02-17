@@ -3,6 +3,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const baseConfig: NextConfig = {
+  output: 'standalone',
   devIndicators: {
     position: 'bottom-right',
   },
