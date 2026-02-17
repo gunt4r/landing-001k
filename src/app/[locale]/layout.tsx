@@ -48,9 +48,13 @@ export default async function RootLayout(props: {
 
   return (
     <html lang={locale}>
-      <body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="antialiased">
         <NextIntlClientProvider>
-            {props.children}
+          {props.children}
         </NextIntlClientProvider>
       </body>
     </html>

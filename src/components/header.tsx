@@ -1,25 +1,33 @@
 'use client';
+
 import { motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import Logo from './logo';
 
 export function Header() {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => setIsReady(true));
+    return () => cancelAnimationFrame(timer);
+  }, []);
+
   return (
     <motion.header
       className="fixed top-0 right-0 left-0 z-50 border-b border-black/10 bg-white/80 px-6 py-6 shadow-sm backdrop-blur-md md:px-12 lg:px-24"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
+      initial={{ y: -40, opacity: 0 }}
+      animate={isReady ? { y: 0, opacity: 1 } : { y: -40, opacity: 0 }}
+      transition={{
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        delay: 0.1,
+      }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <div className="flex items-center gap-3">
-          <div>
-            <h1
-              className="text-3xl text-black"
-              style={{ fontFamily: 'Geist, sans-serif', fontWeight: 900 }}
-            >
-              <Logo />
-            </h1>
-          </div>
+          <h1 className="text-3xl text-black" style={{ fontFamily: 'Geist, sans-serif', fontWeight: 900 }}>
+            <Logo />
+          </h1>
         </div>
 
         <a

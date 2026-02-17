@@ -1,7 +1,7 @@
 'use client';
 import { HashLoader } from 'react-spinners';
 
-export default function ProductPage() {
+export default function Loading() {
   return (
     <HashLoader
       style={{
