@@ -1,6 +1,5 @@
 import { AuthorBlock } from '@/components/authorBlock';
 import { Background3D } from '@/components/background';
-import { BotFeaturesSection } from '@/components/bot-features';
 import { FomoSection } from '@/components/fomo';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
@@ -28,7 +27,6 @@ export default function App() {
         <TargetAudienceSection />
         <PhoneMockupSection />
         <AuthorBlock />
-        <BotFeaturesSection />
         <FomoSection />
       </main>
 

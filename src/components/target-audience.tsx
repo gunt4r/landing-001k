@@ -1,235 +1,291 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
 import { Check } from 'lucide-react';
-import { motion } from 'motion/react';
-import { useMemo } from 'react';
-
-function rand(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function TargetAudienceSection() {
+  const prefersReducedMotion = typeof window !== 'undefined'
+    && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const lowPowerDevice = typeof navigator !== 'undefined' && (
+    (navigator as any).deviceMemory || (navigator as any).deviceMemory <= 2
+    || (navigator as any).hardwareConcurrency || (navigator as any).hardwareConcurrency <= 2
+  );
+
+  const particleCount = useMemo(() => {
+    if (prefersReducedMotion) {
+      return 0;
+    }
+    if (lowPowerDevice) {
+      return 2;
+    }
+    return 5;
+  }, [prefersReducedMotion, lowPowerDevice]);
+
+  const ribbonCount = prefersReducedMotion ? 0 : (lowPowerDevice ? 1 : 3);
+
+  const containerRef = useRef<HTMLElement | null>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    if (!containerRef.current || prefersReducedMotion) {
+      setRevealed(true);
+      return;
+    }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          setRevealed(true);
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, [prefersReducedMotion]);
+
   const benefits = [
-    'Как работают современные схемы, которые в 2025 году лишили пользователей миллиардов долларов',
-    'Инструкцию, чтобы распознать мошенника, до перевода средств',
-    'Рассмотрим методы, которые исключают риск блокировок и чарджбэка',
-    'Проверка чистоты кошелька вашего контрагента',
+    'Крупные переводы ($10,000+): Вы регулярно перемещаете значительные суммы для бизнеса, покупки активов или содержания семьи за рубежом.',
+    'Использование P2P-площадок: Вы часто принимаете фиатные средства от частных лиц, не имея полной информации об источнике их происхождения.',
+    'Отсутствие комплаенс-базы: У вас нет готового пакета документов на случай внезапного запроса от банка.',
+    'Активная жизнь в Европе/ОАЭ: Вы оплачиваете расходы картами, которые пополняются через крипто-обменные операции.',
   ];
 
-  const floatingParticles = useMemo(() => {
-    const isReduced
-      = typeof window !== 'undefined'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const count = isReduced ? 0 : 8;
-
-    return Array.from({ length: count }).map((_, i) => {
-      const r1 = rand(i * 3 + 1);
-      const r2 = rand(i * 3 + 2);
-      const r3 = rand(i * 3 + 3);
-
-      return {
-        id: i,
-        size: i % 2 === 0 ? 6 : 3,
-        isRed: i % 2 === 0,
-        top: 15 + r1 * 70,
-        left: 10 + r2 * 80,
-        duration: 12 + r3 * 6,
-        delay: i * 1.2,
-        yOffset: -90 - r3 * 50,
-        xOffset: (r2 - 0.5) * 60,
-      };
-    });
-  }, []);
+  // small utility to generate array for particles / ribbons
+  const arr = (n: number) => Array.from({ length: n }).map((_, i) => i);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50 px-6 py-24 md:px-12 md:py-32 lg:px-24">
+    <section
+      ref={containerRef}
+      className="relative overflow-hidden bg-black px-5 py-20 text-white md:px-12 md:py-28"
+      aria-labelledby="ta-heading"
+    >
+      <style>
+        {`
+        /* accent color */
+        :root { --accent: #EA0000; }
 
-      <div className="pointer-events-none absolute inset-0">
+        /* coins (3D-ish) */
+        .coin {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          position: absolute;
+          transform-style: preserve-3d;
+          backface-visibility: hidden;
+          perspective: 800px;
+          will-change: transform, opacity;
+        }
+        .coin .face {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          display: block;
+          transform-origin: center;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+        .coin--front {
+          background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.16), rgba(255,255,255,0.02) 20%, rgba(0,0,0,0.6) 70%), linear-gradient(180deg, #222 0%, #000 100%);
+          border: 1px solid rgba(255,255,255,0.04);
+        }
+        .coin--edge {
+          width: 20%;
+          left: 40%;
+          top: 0;
+          height: 100%;
+          border-radius: 10px;
+          background: linear-gradient(90deg, rgba(234,0,0,0.95), rgba(255,140,140,0.3));
+          transform-origin: left center;
+        }
 
-        <motion.div
-          className="absolute inset-0 opacity-[0.02]"
+        /* coin rotate animation (subtle) */
+        @keyframes coin-spin {
+          0% { transform: rotateY(0deg) translateZ(0); opacity: 0.95; }
+          50% { transform: rotateY(180deg) translateZ(6px); opacity: 1; }
+          100% { transform: rotateY(360deg) translateZ(0); opacity: 0.95; }
+        }
+
+        /* floating subtle glow */
+        .glow {
+          position: absolute;
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          filter: blur(60px);
+          opacity: 0.7;
+          pointer-events: none;
+        }
+
+        /* transaction ribbon */
+        .ribbon {
+          position: absolute;
+          height: 6px;
+          border-radius: 999px;
+          opacity: 0.9;
+          transform: translate3d(-100%,0,0);
+          will-change: transform, opacity;
+        }
+        @keyframes ribbon-flow {
+          0% { transform: translate3d(-140%,0,0); opacity: 0; }
+          10% { opacity: 0.9; }
+          60% { transform: translate3d(120%,0,0); opacity: 0.9; }
+          100% { transform: translate3d(140%,0,0); opacity: 0; }
+        }
+
+        /* fade/slide reveal for content */
+        .reveal {
+          transform: translateY(0);
+          opacity: 1;
+          transition: transform 520ms cubic-bezier(.2,.9,.3,1), opacity 520ms ease;
+        }
+        .pre-reveal {
+          transform: translateY(24px);
+          opacity: 0;
+        }
+
+        /* card */
+        .ta-card {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+          border: 1px solid rgba(255,255,255,0.04);
+          backdrop-filter: blur(6px);
+        }
+
+        /* reduced motion fallbacks */
+        @media (prefers-reduced-motion: reduce) {
+          .coin { animation: none !important; }
+          .ribbon { animation: none !important; transform: none !important; opacity: 0.6 !important; }
+        }
+      `}
+      </style>
+
+      <div className="pointer-events-none">
+        <div
+          aria-hidden
+          className="glow"
           style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(0, 0, 0, 0.3) 2px, transparent 2px),
-              linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 2px, transparent 2px)
-            `,
-            backgroundSize: '60px 60px',
-          }}
-          animate={{
-            opacity: [0.015, 0.03, 0.015],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
+            left: '6%',
+            top: '6%',
+            background: 'radial-gradient(circle, rgba(234,0,0,0.14), rgba(234,0,0,0.035) 40%, transparent 60%)',
+            transform: 'translateZ(0)',
           }}
         />
-
-        <motion.div
-          className="absolute top-[20%] left-[15%] h-[250px] w-[250px]"
+        <div
+          aria-hidden
+          className="glow"
           style={{
-            background: 'radial-gradient(circle, rgba(234, 0, 0, 0.1) 0%, rgba(234, 0, 0, 0.03) 50%, transparent 70%)',
-            filter: 'blur(80px)',
-          }}
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
-        <motion.div
-          className="absolute right-[15%] bottom-[20%] h-[300px] w-[300px]"
-          style={{
-            background: 'radial-gradient(circle, rgba(234, 0, 0, 0.08) 0%, rgba(234, 0, 0, 0.02) 50%, transparent 70%)',
-            filter: 'blur(90px)',
-          }}
-          animate={{
-            scale: [1, 1.25, 1],
-            opacity: [0.6, 0.9, 0.6],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-
-        {floatingParticles.map(particle => (
-          <motion.div
-            key={particle.id}
-            className="will-change-opacity absolute rounded-full will-change-transform"
-            style={{
-              background: particle.isRed ? 'rgba(234, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.2)',
-              boxShadow: particle.isRed
-                ? '0 0 12px rgba(234, 0, 0, 0.4)'
-                : '0 0 8px rgba(0, 0, 0, 0.15)',
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              top: `${particle.top}%`,
-              left: `${particle.left}%`,
-              transform: 'translateZ(0)',
-            }}
-            animate={{
-              y: [0, particle.yOffset, 0],
-              x: [0, particle.xOffset, 0],
-              opacity: [0, 0.7, 0],
-              scale: [0.5, 1.2, 0.5],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: particle.delay,
-            }}
-          />
-        ))}
-
-        <motion.div
-          className="absolute top-[15%] left-[20%] h-[350px] w-[2px]"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(234, 0, 0, 0.25) 40%, rgba(234, 0, 0, 0.4) 50%, rgba(234, 0, 0, 0.25) 60%, transparent 100%)',
-            transform: 'rotate(-18deg)',
-            boxShadow: '0 0 25px rgba(234, 0, 0, 0.25)',
-          }}
-          animate={{
-            opacity: [0.4, 0.7, 0.4],
-            scaleY: [1, 1.08, 1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
-        <motion.div
-          className="absolute top-[25%] right-[25%] h-[300px] w-[2px]"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(234, 0, 0, 0.2) 40%, rgba(234, 0, 0, 0.35) 50%, rgba(234, 0, 0, 0.2) 60%, transparent 100%)',
-            transform: 'rotate(20deg)',
-            boxShadow: '0 0 20px rgba(234, 0, 0, 0.2)',
-          }}
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-            scaleY: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
+            right: '6%',
+            bottom: '10%',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.06), rgba(234,0,0,0.02) 40%, transparent 70%)',
+            transform: 'translateZ(0)',
           }}
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-5xl">
+      {arr(particleCount).map((i) => {
+        const size = 48 + (i % 2) * 22;
+        const top = 12 + i * 10;
+        const left = (i % 2 === 0) ? (12 + i * 6) : (70 - i * 6);
+        const delay = i * 1.2;
+        const duration = 8 + (i % 3) * 3;
+        return (
+          <div
+            key={`coin-${i}`}
+            className="coin"
+            style={{
+              width: size,
+              height: size,
+              top: `${top}%`,
+              left: `${left}%`,
+              animation: prefersReducedMotion ? 'none' : `coin-spin ${duration}s linear ${delay}s infinite`,
+              transformOrigin: 'center',
+            }}
+            aria-hidden
+          >
+            <span className="face coin--front" />
+            <span
+              className="face coin--edge"
+              style={{ transform: 'rotateY(90deg) translateZ(0)' }}
+            />
+          </div>
+        );
+      })}
 
-        <motion.div
-          className="mb-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+      {/* ribbons (transaction lines) */}
+      {arr(ribbonCount).map((i) => {
+        const top = 20 + i * 18;
+        const left = i % 2 === 0 ? '-20%' : '-30%';
+        const color = i % 2 === 0 ? 'linear-gradient(90deg, rgba(234,0,0,0.95), rgba(234,0,0,0.2))' : 'linear-gradient(90deg, rgba(255,255,255,0.08), rgba(234,0,0,0.12))';
+        const delay = i * 1.5;
+        const duration = 6 + i * 1.4;
+        return (
+          <div
+            key={`ribbon-${i}`}
+            className="ribbon"
+            style={{
+              top: `${top}%`,
+              left,
+              width: '80%',
+              background: color,
+              animation: prefersReducedMotion ? 'none' : `ribbon-flow ${duration}s linear ${delay}s infinite`,
+            }}
+            aria-hidden
+          />
+        );
+      })}
 
-          <h2 className="text-4xl font-black text-black md:text-5xl lg:text-6xl">
-            Что вы узнаете для
-            {' '}
-            <span className="relative inline-block">
-              <span className="relative z-10">защиты капитала</span>
-              <motion.span
-                className="absolute bottom-0 left-0 h-4 w-full bg-[#EA0000]/20"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                style={{ transformOrigin: 'left' }}
-              />
-            </span>
-            ?
+      <div className="relative z-10 mx-auto max-w-4xl">
+        <div className={`mb-10 text-center ${revealed ? 'reveal' : 'pre-reveal'}`}>
+          <h2 id="ta-heading" className="text-3xl leading-tight font-extrabold md:text-4xl lg:text-5xl">
+            Кому важно пересмотреть свою стратегию безопасности?
           </h2>
-        </motion.div>
+        </div>
 
-        <div className="mb-12 space-y-5">
-          {benefits.map((benefit, index) => (
-            <motion.div
-              key={index}
-              className="group flex items-start gap-4 rounded-2xl border border-black/10 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-[#EA0000]/30 hover:shadow-[0_15px_40px_rgba(234,0,0,0.08)]"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ x: 8 }}
+        <div className="space-y-4">
+          {benefits.map((b, idx) => (
+            <article
+              key={idx}
+              className="ta-card ta-item relative flex items-start gap-4 rounded-2xl p-5 md:p-6"
+              style={{
+                transition: 'transform 240ms ease, box-shadow 240ms ease',
+                transform: revealed ? 'translateY(0)' : 'translateY(12px)',
+              }}
             >
-
-              <motion.div
-                className="mt-0.5 flex-shrink-0 rounded-full border-2 border-black/15 bg-white p-1.5 transition-colors duration-300 group-hover:border-[#EA0000] group-hover:bg-[#EA0000]"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Check className="h-5 w-5 text-black transition-colors duration-300 group-hover:text-white" strokeWidth={3} />
-              </motion.div>
-
-              <p className="text-lg leading-relaxed text-black/80 md:text-xl">
-                {benefit}
-              </p>
-
-              <motion.div
-                className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              <div
+                className="flex-shrink-0 rounded-full p-1.5"
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(234, 0, 0, 0.03) 0%, transparent 70%)',
-                  pointerEvents: 'none',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  width: 44,
+                  height: 44,
+                  display: 'grid',
+                  placeItems: 'center',
+                }}
+                aria-hidden
+              >
+                <Check className="h-5 w-5 text-white" strokeWidth={3} />
+              </div>
+
+              <div className="flex-1">
+                <h3 className="text-base leading-snug font-semibold text-white/95 md:text-lg">
+                  {b.split(':')[0]}
+                </h3>
+                <p className="mt-1 text-sm text-white/70">
+                  {b.split(':')[1]}
+                </p>
+              </div>
+
+              <div
+                aria-hidden
+                style={{
+                  width: 6,
+                  height: 40,
+                  borderRadius: 6,
+                  background: 'linear-gradient(180deg, var(--accent), rgba(255,80,80,0.6))',
+                  boxShadow: '0 8px 20px rgba(234,0,0,0.12)',
                 }}
               />
-            </motion.div>
+            </article>
           ))}
         </div>
       </div>

@@ -1,11 +1,27 @@
+# services:
+#   landing:
+#     build:
+#       context: .
+#       target: runner
+#     container_name: landing_001k
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - NODE_ENV=production
+#     restart: unless-stopped
+
+version: "3.9"
+
 services:
   landing:
     build:
       context: .
-      target: runner  # Changed from 'development' to 'runner'
-    container_name: landing_001k
+      target: development
+    container_name: landing_dev
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
     environment:
-      - NODE_ENV=production
-    restart: unless-stopped
+      - NODE_ENV=development

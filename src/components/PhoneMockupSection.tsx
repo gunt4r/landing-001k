@@ -227,7 +227,7 @@ export function PhoneMockupSection() {
                 .map((benefit, index) => (
                   <motion.div
                     key={`left-${index}`}
-                    className="group relative ml-auto max-w-md"
+                    className="group relative mx-auto max-w-md md:ml-auto"
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -396,7 +396,7 @@ export function PhoneMockupSection() {
                 .map((benefit, index) => (
                   <motion.div
                     key={`right-${index}`}
-                    className="group relative mr-auto max-w-md"
+                    className="group relative mx-auto max-w-md md:mr-auto"
                     initial={{ opacity: 0, x: 50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
