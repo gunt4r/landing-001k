@@ -121,7 +121,7 @@ export function AuthorBlock() {
           transition={{ duration: 0.6 }}
         >
           <h2
-            className="text-5xl leading-[1.1] font-black text-white uppercase md:text-6xl lg:text-7xl"
+            className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif', letterSpacing: '0.02em' }}
           >
             АВТОР КУРСА

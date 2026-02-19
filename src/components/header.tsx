@@ -20,7 +20,7 @@ export function Header() {
     <motion.header
       className="fixed top-0 right-0 left-0 z-50 border-b border-white/10 px-6 py-4 shadow-sm md:px-12 lg:px-24"
       style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: 'rgba(0, 0, 0, 1)',
         transform: 'translateZ(0)',
         willChange: 'transform, opacity',
         backfaceVisibility: 'hidden',

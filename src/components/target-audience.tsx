@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
-import { Check } from 'lucide-react';
+import { DollarSign, FileText, Globe, Users } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function TargetAudienceSection() {
@@ -52,6 +52,9 @@ export function TargetAudienceSection() {
     'Активная жизнь в Европе/ОАЭ: Вы оплачиваете расходы картами, которые пополняются через крипто-обменные операции.',
   ];
 
+  // icons mapped by benefit order — легко изменить
+  const icons = [DollarSign, Users, FileText, Globe];
+
   // small utility to generate array for particles / ribbons
   const arr = (n: number) => Array.from({ length: n }).map((_, i) => i);
 
@@ -63,10 +66,8 @@ export function TargetAudienceSection() {
     >
       <style>
         {`
-        /* accent color */
         :root { --accent: #EA0000; }
 
-        /* coins (3D-ish) */
         .coin {
           width: 64px;
           height: 64px;
@@ -99,14 +100,12 @@ export function TargetAudienceSection() {
           transform-origin: left center;
         }
 
-        /* coin rotate animation (subtle) */
         @keyframes coin-spin {
           0% { transform: rotateY(0deg) translateZ(0); opacity: 0.95; }
           50% { transform: rotateY(180deg) translateZ(6px); opacity: 1; }
           100% { transform: rotateY(360deg) translateZ(0); opacity: 0.95; }
         }
 
-        /* floating subtle glow */
         .glow {
           position: absolute;
           width: 220px;
@@ -117,7 +116,6 @@ export function TargetAudienceSection() {
           pointer-events: none;
         }
 
-        /* transaction ribbon */
         .ribbon {
           position: absolute;
           height: 6px;
@@ -133,7 +131,6 @@ export function TargetAudienceSection() {
           100% { transform: translate3d(140%,0,0); opacity: 0; }
         }
 
-        /* fade/slide reveal for content */
         .reveal {
           transform: translateY(0);
           opacity: 1;
@@ -144,14 +141,12 @@ export function TargetAudienceSection() {
           opacity: 0;
         }
 
-        /* card */
         .ta-card {
           background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
           border: 1px solid rgba(255,255,255,0.04);
           backdrop-filter: blur(6px);
         }
 
-        /* reduced motion fallbacks */
         @media (prefers-reduced-motion: reduce) {
           .coin { animation: none !important; }
           .ribbon { animation: none !important; transform: none !important; opacity: 0.6 !important; }
@@ -211,7 +206,6 @@ export function TargetAudienceSection() {
         );
       })}
 
-      {/* ribbons (transaction lines) */}
       {arr(ribbonCount).map((i) => {
         const top = 20 + i * 18;
         const left = i % 2 === 0 ? '-20%' : '-30%';
@@ -236,57 +230,66 @@ export function TargetAudienceSection() {
 
       <div className="relative z-10 mx-auto max-w-4xl">
         <div className={`mb-10 text-center ${revealed ? 'reveal' : 'pre-reveal'}`}>
-          <h2 id="ta-heading" className="text-3xl leading-tight font-extrabold md:text-4xl lg:text-5xl">
+          <h2 id="ta-heading" className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl">
             Кому важно пересмотреть свою стратегию безопасности?
           </h2>
         </div>
 
         <div className="space-y-4">
-          {benefits.map((b, idx) => (
-            <article
-              key={idx}
-              className="ta-card ta-item relative flex items-start gap-4 rounded-2xl p-5 md:p-6"
-              style={{
-                transition: 'transform 240ms ease, box-shadow 240ms ease',
-                transform: revealed ? 'translateY(0)' : 'translateY(12px)',
-              }}
-            >
-              <div
-                className="flex-shrink-0 rounded-full p-1.5"
+          {benefits.map((b, idx) => {
+            const Icon = icons[idx] ?? DollarSign;
+            const [title, desc] = b.split(':');
+            return (
+              <article
+                key={idx}
+                className="ta-card ta-item relative flex items-start gap-4 rounded-2xl p-5 md:p-6"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))',
-                  border: '1px solid rgba(255,255,255,0.04)',
-                  width: 44,
-                  height: 44,
-                  display: 'grid',
-                  placeItems: 'center',
+                  transition: 'transform 240ms ease, box-shadow 240ms ease',
+                  transform: revealed ? 'translateY(0)' : 'translateY(12px)',
                 }}
-                aria-hidden
               >
-                <Check className="h-5 w-5 text-white" strokeWidth={3} />
-              </div>
+                <div
+                  className="flex-shrink-0 rounded-full p-1.5"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))',
+                    border: '1px solid rgba(255,255,255,0.04)',
+                    width: 44,
+                    height: 44,
+                    display: 'grid',
+                    placeItems: 'center',
+                  }}
+                >
+                  {/* Icon is semantic (not purely decorative) — give accessible name */}
+                  <Icon
+                    className="h-5 w-5 text-white"
+                    strokeWidth={2.2}
+                    role="img"
+                    aria-label={title && title.trim()}
+                  />
+                </div>
 
-              <div className="flex-1">
-                <h3 className="text-base leading-snug font-semibold text-white/95 md:text-lg">
-                  {b.split(':')[0]}
-                </h3>
-                <p className="mt-1 text-sm text-white/70">
-                  {b.split(':')[1]}
-                </p>
-              </div>
+                <div className="flex-1">
+                  <h3 className="text-base leading-snug font-semibold text-white/95 md:text-lg">
+                    {title}
+                  </h3>
+                  <p className="mt-1 text-sm text-white/70">
+                    {desc}
+                  </p>
+                </div>
 
-              <div
-                aria-hidden
-                style={{
-                  width: 6,
-                  height: 40,
-                  borderRadius: 6,
-                  background: 'linear-gradient(180deg, var(--accent), rgba(255,80,80,0.6))',
-                  boxShadow: '0 8px 20px rgba(234,0,0,0.12)',
-                }}
-              />
-            </article>
-          ))}
+                <div
+                  aria-hidden
+                  style={{
+                    width: 6,
+                    height: 40,
+                    borderRadius: 6,
+                    background: 'linear-gradient(180deg, var(--accent), rgba(255,80,80,0.6))',
+                    boxShadow: '0 8px 20px rgba(234,0,0,0.12)',
+                  }}
+                />
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

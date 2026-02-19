@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
+import type { Transition } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { easeInOut, motion } from 'motion/react';
 import Image from 'next/image';
@@ -217,13 +218,16 @@ export function HeroSection() {
               rotate: [card.rotate + motionCfg.rotateAmp, card.rotate - motionCfg.rotateAmp / 1.5, card.rotate],
             };
 
-        const transitionValues = reduceMotion
-          ? { duration: 0.001, ease: easeInOut }
+        const transitionValues: Transition<any> = reduceMotion
+          ? {
+              duration: 0.001,
+              ease: easeInOut,
+            }
           : {
               duration: card.duration,
               delay: card.delay,
               repeat: Infinity,
-              repeatType: 'loop',
+              repeatType: 'loop' as const, // Specify the type explicitly
               ease: easeInOut,
             };
 

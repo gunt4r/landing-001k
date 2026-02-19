@@ -1,41 +1,26 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
 import { Landmark, Repeat } from 'lucide-react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Revolut from './revolut.svg';
 
+function rand(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
 export function OldSolutionsSection() {
-  function rand(seed: number) {
-    const x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  }
+  const [isReady, setIsReady] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
-  const warningParticles = useMemo(() => {
-    const isReduced
-      = typeof window !== 'undefined'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const count = isReduced ? 0 : 12;
-
-    return Array.from({ length: count }).map((_, i) => {
-      const r1 = rand(i * 3 + 1);
-      const r2 = rand(i * 3 + 2);
-      const r3 = rand(i * 3 + 3);
-
-      return {
-        id: i,
-        size: i % 3 === 0 ? 6 : 3,
-        isRed: i % 3 === 0,
-        top: 10 + r1 * 80,
-        left: 10 + r2 * 80,
-        duration: 10 + r3 * 5,
-        delay: i * 0.9,
-        yOffset: -80 - r3 * 50,
-        xOffset: (r2 - 0.5) * 60,
-      };
-    });
+  useEffect(() => {
+    setReduceMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const r = requestAnimationFrame(() => setIsReady(true));
+    return () => cancelAnimationFrame(r);
   }, []);
 
   const solutions = [
@@ -43,153 +28,153 @@ export function OldSolutionsSection() {
       name: 'Финтех-платформы',
       subtitle: 'Wise, Revolut',
       risk: 'Усиление мониторинга привело к тому, что транзакции анализируются по сотням параметров. Ошибка в структурировании суммы может привести к блокировке капитала на срок до 60 дней.',
-      icon: <Image src={Revolut} alt="Revolut" width={40} height={40} />,
+      icon: <Image src={Revolut} className="invert" alt="Revolut" width={40} height={40} />,
     },
     {
       name: 'P2P-рынок',
       subtitle: 'Риски цепочек',
       risk: 'Классические схемы «треугольник» и фрод с чарджбэками стали профессиональнее. Получение средств от непроверенного лица может привести к вопросам со стороны правоохранительных органов.',
-      icon: <Repeat />,
+      icon: <Repeat className="h-full w-6 text-white" />,
     },
     {
       name: 'SWIFT-переводы',
       subtitle: 'Банковские каналы',
       risk: 'Банковский перевод незнакомому контрагенту — один из самых частых триггеров для SoF-запросов и заморозок, особенно при суммах от $10,000.',
-      icon: <Landmark />,
+      icon: <Landmark className="h-full w-6 text-white" />,
     },
   ];
 
+  const warningParticles = useMemo(() => {
+    if (reduceMotion) {
+      return [];
+    }
+
+    return Array.from({ length: 6 }, (_, i) => {
+      const r1 = rand(i * 3 + 1);
+      const r2 = rand(i * 3 + 2);
+      const r3 = rand(i * 3 + 3);
+
+      return {
+        id: i,
+        isRed: i % 2 === 0,
+        top: 15 + r1 * 70,
+        left: 15 + r2 * 70,
+        duration: 12 + r3 * 6,
+        delay: i * 1.5,
+        yOffset: -60 - r3 * 40,
+        xOffset: (r2 - 0.5) * 50,
+      };
+    });
+  }, [reduceMotion]);
+
   return (
     <section className="relative overflow-hidden bg-white px-6 py-24 md:px-12 md:py-32 lg:px-24">
-
-      <div className="pointer-events-none absolute inset-0">
-
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+      >
         <motion.div
-          className="absolute top-0 left-0 h-[400px] w-full opacity-15"
+          className="absolute top-0 left-0 h-96 w-full"
           style={{
             backgroundImage: `
-              linear-gradient(to right, rgba(234, 0, 0, 0.2) 2px, transparent 2px),
-              linear-gradient(to bottom, rgba(234, 0, 0, 0.2) 2px, transparent 2px)
+              linear-gradient(to right, rgba(234,0,0,0.15) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(234,0,0,0.15) 1px, transparent 1px)
             `,
             backgroundSize: '60px 60px',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
             maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
           }}
-          animate={{
-            opacity: [0.1, 0.25, 0.1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          initial={{ opacity: 0 }}
+          animate={isReady ? { opacity: reduceMotion ? 0.12 : [0.08, 0.2, 0.08] } : { opacity: 0 }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
 
+        {/* Геометрия слева — только opacity, БЕЗ y/rotate (clipPath на CPU) */}
         <motion.div
-          className="absolute top-[15%] -left-10 h-[350px] w-[350px]"
+          className="absolute top-[15%] -left-10 h-80 w-80"
           style={{
-            background: 'linear-gradient(135deg, rgba(234, 0, 0, 0.1) 0%, rgba(234, 0, 0, 0.04) 100%)',
+            background: 'linear-gradient(135deg, rgba(234,0,0,0.08) 0%, rgba(234,0,0,0.03) 100%)',
             clipPath: 'polygon(0% 25%, 65% 0%, 100% 40%, 70% 100%, 0% 80%)',
-            boxShadow: '0 40px 100px rgba(234, 0, 0, 0.15)',
-            border: '1px solid rgba(234, 0, 0, 0.15)',
+            border: '1px solid rgba(234,0,0,0.12)',
           }}
-          animate={{
-            y: [0, 35, 0],
-            rotateZ: [0, 4, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          initial={{ opacity: 0 }}
+          animate={isReady ? { opacity: reduceMotion ? 0.8 : [0.6, 1, 0.6] } : { opacity: 0 }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
 
+        {/* Геометрия справа */}
         <motion.div
-          className="absolute top-[50%] -right-10 h-[300px] w-[300px]"
+          className="absolute top-[50%] -right-10 h-72 w-72"
           style={{
-            background: 'linear-gradient(225deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.03) 100%)',
+            background: 'linear-gradient(225deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.02) 100%)',
             clipPath: 'polygon(25% 0%, 100% 5%, 100% 100%, 10% 85%)',
-            boxShadow: '0 50px 120px rgba(0, 0, 0, 0.12)',
-            border: '1px solid rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(0,0,0,0.08)',
           }}
-          animate={{
-            y: [0, -30, 0],
-            rotateZ: [0, -3, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
+          initial={{ opacity: 0 }}
+          animate={isReady ? { opacity: reduceMotion ? 0.7 : [0.5, 0.9, 0.5] } : { opacity: 0 }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         />
 
+        {/* Red glow — статичный blur */}
         <motion.div
-          className="absolute top-[30%] right-[15%] h-[250px] w-[250px]"
+          className="absolute top-[30%] right-[15%] h-64 w-64"
           style={{
-            background: 'radial-gradient(circle, rgba(234, 0, 0, 0.18) 0%, rgba(234, 0, 0, 0.08) 40%, transparent 70%)',
-            filter: 'blur(70px)',
+            background: 'radial-gradient(circle, rgba(234,0,0,0.15) 0%, transparent 70%)',
+            filter: 'blur(60px)',
           }}
-          animate={{
-            scale: [1, 1.35, 1],
-            opacity: [0.5, 0.9, 0.5],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          initial={{ opacity: 0 }}
+          animate={isReady ? { opacity: reduceMotion ? 0.5 : [0.4, 0.8, 0.4] } : { opacity: 0 }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
         />
 
+        {/* Diagonal line */}
         <motion.div
-          className="absolute top-[20%] left-[25%] h-[450px] w-[3px]"
+          className="absolute top-[20%] left-[25%] h-96 w-[2px]"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(234, 0, 0, 0.4) 30%, rgba(234, 0, 0, 0.6) 50%, rgba(234, 0, 0, 0.4) 70%, transparent 100%)',
-            transform: 'rotate(-18deg)',
-            boxShadow: '0 0 35px rgba(234, 0, 0, 0.4), 0 0 70px rgba(234, 0, 0, 0.2)',
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(234,0,0,0.35) 30%, rgba(234,0,0,0.5) 50%, rgba(234,0,0,0.35) 70%, transparent 100%)',
+            transform: 'rotate(-18deg) translateZ(0)',
           }}
-          animate={{
-            opacity: [0.5, 1, 0.5],
-            scaleY: [1, 1.12, 1],
-          }}
-          transition={{
-            duration: 11,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          initial={{ opacity: 0 }}
+          animate={isReady ? { opacity: reduceMotion ? 0.5 : [0.4, 0.9, 0.4] } : { opacity: 0 }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {warningParticles.map((particle, i) => (
+        {/* Warning particles — треугольники */}
+        {isReady && warningParticles.map(particle => (
           <motion.div
-            key={`warning-particle-${i}`}
+            key={particle.id}
             className="absolute"
             style={{
-              width: '0',
-              height: '0',
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderBottom: particle.isRed ? '10px solid rgba(234, 0, 0, 0.6)' : '10px solid rgba(255, 165, 0, 0.5)',
-              filter: 'drop-shadow(0 0 8px rgba(234, 0, 0, 0.5))',
+              width: 0,
+              height: 0,
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+              borderBottom: particle.isRed
+                ? '8px solid rgba(234,0,0,0.5)'
+                : '8px solid rgba(255,165,0,0.4)',
               top: `${particle.top}%`,
               left: `${particle.left}%`,
+              willChange: 'transform, opacity',
             }}
+            initial={{ opacity: 0 }}
             animate={{
               y: [0, -particle.yOffset, 0],
               x: [0, particle.xOffset, 0],
-              opacity: [0, 0.9, 0],
+              opacity: [0, 0.8, 0],
               rotate: [0, 180, 360],
             }}
             transition={{
               duration: particle.duration,
               repeat: Infinity,
               ease: 'easeInOut',
-              delay: i * 1,
+              delay: particle.delay,
             }}
           />
         ))}
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl">
-
+        {/* ─── ЗАГОЛОВОК ─── */}
         <motion.div
           className="mb-16 text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -197,8 +182,10 @@ export function OldSolutionsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-
-          <h2 className="mb-6 text-4xl font-black text-black md:text-5xl lg:text-6xl">
+          <h2
+            className="mb-6 text-4xl font-black text-black md:text-5xl lg:text-6xl"
+            style={{ fontFamily: 'Geist, sans-serif' }}
+          >
             Как вчерашние лайфхаки становятся
             {' '}
             <span className="relative inline-block">
@@ -217,7 +204,8 @@ export function OldSolutionsSection() {
           </h2>
 
           <motion.p
-            className="mx-auto max-w-3xl text-xl text-black/70"
+            className="mx-auto max-w-3xl text-lg text-black/70"
+            style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -238,84 +226,71 @@ export function OldSolutionsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
             >
-
-              <motion.div
+              <div
                 className="relative h-full border-2 border-black/10 bg-gradient-to-br from-white to-gray-50 p-8"
                 style={{
                   clipPath: 'polygon(0% 0%, 100% 0%, 100% 92%, 92% 100%, 0% 100%)',
-                  boxShadow: '0 25px 70px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 25px 70px rgba(0,0,0,0.1)',
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                 }}
-                whileHover={{
-                  y: -8,
-                  boxShadow: '0 35px 90px rgba(234, 0, 0, 0.2)',
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px) translateZ(0)';
+                  e.currentTarget.style.boxShadow = '0 35px 90px rgba(234,0,0,0.2)';
                 }}
-                transition={{ duration: 0.3 }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0) translateZ(0)';
+                  e.currentTarget.style.boxShadow = '0 25px 70px rgba(0,0,0,0.1)';
+                }}
               >
-
-                <motion.div
-                  className="absolute top-0 right-0 flex h-16 w-16 items-center justify-center"
+                <div
+                  className="absolute top-0 right-0 h-16 w-16"
                   style={{
-                    background: 'linear-gradient(225deg, rgba(234, 0, 0, 0.15) 0%, transparent 80%)',
+                    background: 'linear-gradient(225deg, rgba(234,0,0,0.12) 0%, transparent 80%)',
                     clipPath: 'polygon(40% 0%, 100% 0%, 100% 100%)',
                   }}
-                  animate={{
-                    opacity: [0.6, 1, 0.6],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: index * 0.5,
-                  }}
-                >
-                </motion.div>
+                />
 
-                <div className="flex items-center gap-4">
-                  <motion.div
-                    className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EA0000] to-[#c00000] text-4xl shadow-2xl"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <motion.div>
+                <div className="mb-3 flex items-center gap-4">
+                  <div className="rounded-xl border border-[#222] bg-[#EA0000] p-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#000]/60">
                       {solution.icon}
-                    </motion.div>
-                  </motion.div>
-
-                  <div className="mb-4">
-                    <h3 className="mb-2 text-2xl font-bold text-black md:text-3xl">
-                      {solution.name}
-                    </h3>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-extrabold text-[#EA0000]">{solution.name}</div>
+                    <div className="mt-1 inline-block rounded-full bg-[#000]/70 px-3 py-1 text-xs font-semibold text-white">
+                      {solution.subtitle}
+                    </div>
                   </div>
                 </div>
 
-                <div className="mb-4 inline-block rounded-full bg-[#EA0000]/10 px-4 py-1 text-sm font-semibold text-[#EA0000]">
-                  {solution.subtitle}
-                </div>
-
-                <p className="leading-relaxed text-black/70">
+                {/* Risk description */}
+                <p
+                  className="text-sm leading-relaxed text-black/70"
+                  style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
+                >
                   {solution.risk}
                 </p>
 
-                <motion.div
-                  className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                {/* Hover overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   style={{
-                    background: 'radial-gradient(circle at 50% 50%, rgba(234, 0, 0, 0.06) 0%, transparent 70%)',
-                    pointerEvents: 'none',
+                    background: 'radial-gradient(circle at 50% 50%, rgba(234,0,0,0.04) 0%, transparent 70%)',
                   }}
                 />
-              </motion.div>
+              </div>
 
-              <motion.div
+              {/* 3D Shadow — статичный blur */}
+              <div
                 className="absolute inset-0 -z-10"
                 style={{
-                  background: 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.1), transparent)',
-                  filter: 'blur(20px)',
+                  background: 'linear-gradient(to bottom right, rgba(0,0,0,0.08), transparent)',
+                  filter: 'blur(18px)',
                   transform: 'translate(10px, 10px)',
                 }}
-                whileHover={{
-                  transform: 'translate(12px, 12px)',
-                }}
-                transition={{ duration: 0.3 }}
               />
             </motion.div>
           ))}
