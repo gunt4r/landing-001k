@@ -187,7 +187,7 @@ export function AuthorBlock() {
               </div>
 
               <div
-                className="absolute top-0 left-0 sm:left-2/6 h-20 w-20 sm:left-0"
+                className="absolute top-0 left-0 h-20 w-20 sm:left-0"
                 style={{
                   background: 'linear-gradient(135deg, rgba(234,0,0,0.3) 0%, transparent 70%)',
                   clipPath: 'polygon(0% 0%, 100% 0%, 0% 100%)',

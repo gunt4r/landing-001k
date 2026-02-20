@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
-import { Ban, CheckCircle, FileText, Search, Shield } from 'lucide-react';
+import { Ban, CheckCircle, Search, SendHorizontal, Shield } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -11,64 +11,52 @@ function rand(seed: number) {
   return x - Math.floor(x);
 }
 
+const items = [
+  {
+    icon: Shield,
+    badge: 'СХЕМЫ МОШЕННИЧЕСТВА',
+    text: 'Разбор схем: которые в 2025 году лишили пользователей миллиардов долларов',
+  },
+  {
+    icon: Search,
+    badge: 'РАЗБОР КЕЙСОВ',
+    text: 'Как пользователи теряли доступ к активам, и пошаговый план, как этого избежать в 2026 году',
+  },
+  {
+    icon: Ban,
+    badge: 'ЗАЩИТА ОТ БЛОКИРОВОК',
+    text: 'Разбор методов: которые исключают риск блокировок и чарджбэка',
+  },
+  {
+    icon: SendHorizontal,
+    badge: 'AML-АУДИТ',
+    text: 'Как самостоятельно проверять «чистоту» кошельков контрагентов перед отправкой средств',
+  },
+  {
+    icon: CheckCircle,
+    badge: 'ЧЕК-ЛИСТ',
+    text: 'Как распознать мошенника ещё на этапе обсуждения условий сделки',
+  },
+];
+
 export function PhoneMockupSection() {
-  const [isReady, setIsReady] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    setReduceMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const r = requestAnimationFrame(() => setIsReady(true));
-    return () => cancelAnimationFrame(r);
+    try {
+      setReduceMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      setIsDesktop(window.matchMedia('(min-width: 1024px)').matches);
+    } catch {
+      // keep defaults
+    }
   }, []);
 
-  const documents = [
-    {
-      icon: Shield,
-      title: 'Anti-Scam Guide 2025',
-      badge: 'Схемы мошенничества',
-      text: 'Разбор схем: которые в 2025 году лишили пользователей миллиардов долларов',
-      position: 'left',
-      gradient: 'from-[#EA0000] to-[#c00000]',
-    },
-    {
-      icon: Search,
-      title: 'Case Studies 2026',
-      badge: 'Разбор кейсов',
-      text: 'Разбор кейсов: как пользователи теряли доступ к активам, и пошаговый план, как этого избежать в 2026 году',
-      position: 'left',
-      gradient: 'from-[#EA0000] to-[#b00000]',
-    },
-    {
-      icon: Ban,
-      title: 'Risk Prevention Protocol',
-      badge: 'Защита от блокировок',
-      text: 'Разбор методов: которые исключают риск блокировок и чарджбэка',
-      position: 'right',
-      gradient: 'from-[#EA0000] to-[#d00000]',
-    },
-    {
-      icon: CheckCircle,
-      title: 'AML Audit Framework',
-      badge: 'Проверка контрагентов',
-      text: 'AML-аудит: как самостоятельно проверять «чистоту» кошельков контрагентов перед отправкой средств',
-      position: 'right',
-      gradient: 'from-[#EA0000] to-[#a00000]',
-    },
-  ];
-
-  const checklistItems = [
-    'Разбор схем 2025',
-    'Разбор кейсов 2026',
-    'Методы защиты от блокировок',
-    'AML-аудит контрагентов',
-    'Распознавание мошенников',
-  ];
-
   const floatingParticles = useMemo(() => {
-    if (reduceMotion) {
+    if (reduceMotion || !isDesktop) {
       return [];
     }
-    return Array.from({ length: 4 }, (_, i) => {
+    return Array.from({ length: 3 }, (_, i) => {
       const r1 = rand(i * 3 + 1);
       const r2 = rand(i * 3 + 2);
       const r3 = rand(i * 3 + 3);
@@ -83,16 +71,18 @@ export function PhoneMockupSection() {
         xOffset: (r2 - 0.5) * 40,
       };
     });
-  }, [reduceMotion]);
+  }, [reduceMotion, isDesktop]);
 
   return (
-    <section className="relative overflow-hidden bg-white py-24 md:py-32">
-      {/* ─── ФОНОВЫЙ СЛОЙ ─── */}
+    <section className="relative overflow-hidden bg-white py-16 md:py-24">
+
+      {/* ─── BACKGROUND — GPU-composited layer ─── */}
       <div
+        aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
       >
-        {/* Subtle diagonal lines */}
+        {/* Static diagonal texture */}
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
@@ -106,25 +96,24 @@ export function PhoneMockupSection() {
           }}
         />
 
-        {/* Red accent glow */}
+        {/* Ambient glow — always rendered, loops only when motion ok */}
         <motion.div
           className="absolute top-[20%] left-[15%] h-96 w-96"
           style={{
-            background: 'radial-gradient(circle, rgba(234,0,0,0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(194,0,0,0.07) 0%, transparent 70%)',
             filter: 'blur(80px)',
           }}
-          initial={{ opacity: 0 }}
-          animate={isReady ? { opacity: reduceMotion ? 0.5 : [0.3, 0.6, 0.3] } : { opacity: 0 }}
+          animate={!reduceMotion ? { opacity: [0.3, 0.65, 0.3] } : { opacity: 0.4 }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Particles */}
-        {isReady && floatingParticles.map(p => (
+        {/* Particles — desktop + motion ok only */}
+        {floatingParticles.map(p => (
           <motion.div
             key={p.id}
             className="absolute rounded-full"
             style={{
-              background: 'rgba(234,0,0,0.25)',
+              background: 'rgba(194,0,0,0.22)',
               width: `${p.size}px`,
               height: `${p.size}px`,
               top: `${p.top}%`,
@@ -132,393 +121,293 @@ export function PhoneMockupSection() {
               willChange: 'transform, opacity',
             }}
             initial={{ opacity: 0 }}
-            animate={{
-              y: [0, p.yOffset, 0],
-              x: [0, p.xOffset, 0],
-              opacity: [0, 0.5, 0],
-            }}
+            animate={{ y: [0, p.yOffset, 0], x: [0, p.xOffset, 0], opacity: [0, 0.5, 0] }}
             transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 container mx-auto max-w-7xl px-6">
-        {/* ─── ЗАГОЛОВОК ─── */}
-        <motion.div
-          className="mb-20 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2
-            className="mt-2 text-3xl leading-tight font-bold text-black md:text-4xl lg:text-5xl"
+      <div className="relative z-10 container mx-auto max-w-7xl px-4 sm:px-6">
+
+        {/* ─── HEADING ─── */}
+        <div className="mb-10 text-center md:mb-16">
+          <motion.h2
+            className="mt-2 text-2xl leading-tight font-bold text-black sm:text-3xl md:text-4xl lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif' }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.65, ease: 'easeOut' }}
           >
             Что вы получите для
             {' '}
             <span className="relative inline-block">
               <span className="relative z-10">защиты капитала</span>
               <motion.span
-                className="absolute bottom-0 left-0 h-4 w-full bg-[#EA0000]/20"
+                className="absolute bottom-0 left-0 h-3 w-full md:h-4"
+                style={{ background: 'rgba(194,0,0,0.15)', transformOrigin: 'left' }}
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                style={{ transformOrigin: 'left' }}
+                transition={{ duration: 0.65, delay: 0.35, ease: 'easeOut' }}
               />
             </span>
             ?
-          </h2>
-        </motion.div>
+          </motion.h2>
+        </div>
 
-        {/* ─── СЕТКА: Документы + Телефон ─── */}
+        {/* ─── MAIN LAYOUT — always flex-row ─── */}
         <div className="relative mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_auto_1fr]">
-            {/* LEFT DOCUMENTS */}
-            <div className="space-y-10">
-              {documents
-                .filter(d => d.position === 'left')
-                .map((doc, index) => (
+          <div className="flex flex-row items-center gap-3 sm:gap-6 md:gap-10 lg:gap-14">
+
+            {/* LEFT — Cards */}
+            <div className="min-w-0 flex-1 space-y-2 sm:space-y-3">
+              {items.map((item, i) => {
+                const Icon = item.icon;
+                return (
                   <motion.div
-                    key={`left-${index}`}
-                    className="group relative mx-auto max-w-md md:ml-auto"
-                    initial={{ opacity: 0, x: -60, rotateY: 20 }}
-                    whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.9, delay: index * 0.15 }}
-                    style={{ perspective: '1500px' }}
+                    key={i}
+                    /* Always fade in. Slide only on desktop where GPU can handle it cleanly */
+                    initial={{ opacity: 0, x: isDesktop && !reduceMotion ? -16 : 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{ duration: 0.45, delay: i * 0.07, ease: 'easeOut' }}
                   >
-                    {/* Main document card */}
                     <div
-                      className="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white p-8 shadow-2xl"
-                      style={{
-                        transform: 'translateZ(0) rotateY(-3deg)',
-                        backfaceVisibility: 'hidden',
-                        transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-                        border: '1px solid rgba(0,0,0,0.06)',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.1)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateZ(25px) rotateY(-1deg) translateY(-8px)';
-                        e.currentTarget.style.boxShadow = '0 30px 80px rgba(234,0,0,0.18)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateZ(0) rotateY(-3deg)';
-                        e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.12)';
-                      }}
+                      className="group flex items-stretch overflow-hidden rounded-lg bg-white shadow-[0_2px_10px_rgba(0,0,0,0.07)] transition-shadow duration-200 hover:shadow-[0_6px_24px_rgba(194,0,0,0.11)] sm:rounded-xl"
+                      style={{ border: '1px solid rgba(0,0,0,0.07)' }}
                     >
-                      {/* Red accent corner */}
+                      {/* Icon block */}
                       <div
-                        className="absolute top-0 right-0 h-24 w-24 opacity-60"
-                        style={{
-                          background: 'linear-gradient(225deg, rgba(234,0,0,0.08) 0%, transparent 70%)',
-                        }}
-                      />
-
-                      {/* Icon container */}
-                      <div className="mb-6 flex items-center gap-4">
-                        <div
-                          className={`flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${doc.gradient} shadow-xl`}
-                          style={{
-                            boxShadow: '0 8px 24px rgba(234,0,0,0.3)',
-                            transform: 'translateZ(0)',
-                            transition: 'transform 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.08) translateZ(0)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1) translateZ(0)';
-                          }}
-                        >
-                          <doc.icon className="h-8 w-8 text-white" strokeWidth={2.5} />
-                        </div>
-
-                        {/* Title */}
-                        <div className="flex-1">
-                          <h3
-                            className="text-sm font-black tracking-wider text-black uppercase"
-                            style={{ fontFamily: 'Geist, sans-serif', letterSpacing: '0.05em' }}
-                          >
-                            {doc.title}
-                          </h3>
-                        </div>
-                      </div>
-
-                      {/* Badge */}
-                      <div className="mb-5">
-                        <div
-                          className="inline-block rounded-md bg-black px-3 py-1.5 text-xs font-bold tracking-widest text-white uppercase"
-                          style={{ fontFamily: 'Geist, sans-serif' }}
-                        >
-                          {doc.badge}
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <p
-                        className="text-sm leading-relaxed text-black/70"
-                        style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
+                        className="relative flex w-[44px] flex-shrink-0 items-center justify-center overflow-hidden sm:w-[58px] md:w-[68px] lg:w-[76px]"
+                        style={{ background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)' }}
                       >
-                        {doc.text}
-                      </p>
+                        <div
+                          className="pointer-events-none absolute inset-0"
+                          style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)' }}
+                        />
+                        <Icon
+                          className="relative z-10 text-white drop-shadow-sm"
+                          style={{ width: 'clamp(14px, 3vw, 26px)', height: 'clamp(14px, 3vw, 26px)' }}
+                          strokeWidth={1.75}
+                        />
+                      </div>
 
-                      {/* Bottom red line */}
-                      <div className="absolute bottom-0 left-0 h-1.5 w-full bg-gradient-to-r from-[#EA0000] via-[#EA0000] to-transparent" />
+                      {/* Content */}
+                      <div className="flex min-w-0 flex-1 flex-col justify-center px-2.5 py-2.5 sm:px-4 sm:py-3 md:px-5 md:py-4">
+                        <div className="mb-1">
+                          <span
+                            className="inline-block rounded-sm px-1.5 py-[2px] text-[8px] font-extrabold tracking-[0.1em] text-white uppercase sm:px-2.5 sm:py-[3px] sm:text-[9px] sm:tracking-[0.13em] md:text-[10px]"
+                            style={{ background: '#c20000', fontFamily: 'Geist, sans-serif' }}
+                          >
+                            {item.badge}
+                          </span>
+                        </div>
+                        <p
+                          className="text-[10px] leading-snug text-black/60 sm:text-xs md:text-sm"
+                          style={{ fontFamily: 'Geist, sans-serif', fontWeight: 400 }}
+                        >
+                          {item.text}
+                        </p>
+                      </div>
 
-                      {/* Subtle texture overlay */}
+                      {/* Hover right accent — pure CSS, zero JS */}
                       <div
-                        className="pointer-events-none absolute inset-0 opacity-[0.015]"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                        }}
+                        className="w-[2px] flex-shrink-0 self-stretch opacity-0 transition-opacity duration-200 group-hover:opacity-100 sm:w-[3px]"
+                        style={{ background: 'linear-gradient(180deg, #c20000, transparent)' }}
                       />
                     </div>
-
-                    {/* Paper stack shadow layers */}
-                    <div
-                      className="absolute inset-0 -z-10 bg-white"
-                      style={{
-                        transform: 'translateZ(-8px) translateX(6px) translateY(6px) rotateY(-3deg)',
-                        border: '1px solid rgba(0,0,0,0.04)',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-                      }}
-                    />
-                    <div
-                      className="absolute inset-0 -z-20 bg-gray-50"
-                      style={{
-                        transform: 'translateZ(-16px) translateX(12px) translateY(12px) rotateY(-3deg)',
-                        border: '1px solid rgba(0,0,0,0.03)',
-                      }}
-                    />
                   </motion.div>
-                ))}
+                );
+              })}
             </div>
 
-            {/* CENTER PHONE */}
+            {/* RIGHT — Phone — always visible */}
             <motion.div
-              className="relative"
-              initial={{ opacity: 0, scale: 0.92 }}
+              className="flex-shrink-0"
+              initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, delay: 0.2 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
             >
-              <div className="relative mx-auto w-[280px] md:w-[320px]">
-                {/* Phone frame */}
+              <div
+                className="relative"
+                style={{ width: 'clamp(150px, 26vw, 310px)' }}
+              >
+                {/* Phone glow — opacity only, always GPU layer due to filter */}
+                {!reduceMotion && (
+                  <motion.div
+                    className="pointer-events-none absolute inset-0 -z-10 rounded-[44px]"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(194,0,0,0.15) 0%, transparent 70%)',
+                      filter: 'blur(30px)',
+                    }}
+                    animate={{ opacity: [0.3, 0.65, 0.3] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                )}
+
+                {/* Frame */}
                 <div
-                  className="relative overflow-hidden rounded-[44px] border-[12px] border-black bg-black shadow-2xl"
+                  className="relative overflow-hidden bg-black"
                   style={{
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden',
-                    boxShadow: '0 30px 90px rgba(0,0,0,0.4)',
+                    borderRadius: 'clamp(18px, 4vw, 44px)',
+                    border: 'clamp(5px, 1.2vw, 12px) solid black',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.38)',
                   }}
                 >
-                  {/* Screen content - ЧЕКЛИ��Т */}
-                  <div className="relative aspect-[9/19.5] overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
-                    <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center">
-                      {/* Icon */}
-                      <div className="mb-6">
+                  <div
+                    className="relative overflow-hidden"
+                    style={{
+                      aspectRatio: '9 / 19.5',
+                      background: 'linear-gradient(135deg, #1a1a1a 0%, #050505 60%, #111 100%)',
+                    }}
+                  >
+                    <div className="flex h-full w-full flex-col items-center justify-center p-[8%] text-center">
+
+                      {/* App icon */}
+                      <div className="mb-[5%]">
                         <div
-                          className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EA0000] to-[#c00000] shadow-xl"
-                          style={{ boxShadow: '0 12px 32px rgba(234,0,0,0.4)' }}
+                          className="mx-auto flex items-center justify-center rounded-xl"
+                          style={{
+                            width: 'clamp(36px, 8vw, 68px)',
+                            height: 'clamp(36px, 8vw, 68px)',
+                            background: 'linear-gradient(135deg, #c20000, #7a0000)',
+                            boxShadow: '0 8px 24px rgba(194,0,0,0.4)',
+                          }}
                         >
-                          <FileText className="h-10 w-10 text-white" strokeWidth={2.5} />
+                          <Shield
+                            className="text-white"
+                            style={{ width: 'clamp(18px, 4vw, 34px)', height: 'clamp(18px, 4vw, 34px)' }}
+                            strokeWidth={1.75}
+                          />
                         </div>
                       </div>
 
-                      {/* Title */}
                       <h3
-                        className="mb-2 text-lg font-black tracking-wide text-white uppercase"
-                        style={{ fontFamily: 'Geist, sans-serif' }}
+                        className="mb-[2%] font-black text-white uppercase"
+                        style={{
+                          fontFamily: 'Geist, sans-serif',
+                          fontSize: 'clamp(8px, 2vw, 15px)',
+                          letterSpacing: '0.15em',
+                        }}
                       >
                         Чек-лист
                       </h3>
                       <p
-                        className="mb-8 text-xs font-light text-white/60"
-                        style={{ fontFamily: 'Geist, sans-serif' }}
+                        className="text-white/45"
+                        style={{
+                          fontFamily: 'Geist, sans-serif',
+                          fontSize: 'clamp(6px, 1.4vw, 11px)',
+                          marginBottom: '5%',
+                        }}
                       >
                         Защита капитала
                       </p>
 
-                      {/* Checklist items */}
-                      <div className="mb-8 w-full space-y-3">
-                        {checklistItems.map((item, i) => (
-                          <div key={i} className="flex items-center gap-3 text-left">
-                            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded bg-[#EA0000]/20">
-                              <svg
-                                className="h-4 w-4 text-[#EA0000]"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={3}
+                      {/* Checklist */}
+                      <div
+                        className="mb-[6%] w-full"
+                        style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(4px, 1vw, 10px)' }}
+                      >
+                        {items.map((item, i) => {
+                          const ItemIcon = item.icon;
+                          return (
+                            <div key={i} className="flex items-center gap-[6%] text-left">
+                              <div
+                                className="flex flex-shrink-0 items-center justify-center rounded-sm"
+                                style={{
+                                  width: 'clamp(12px, 2.5vw, 20px)',
+                                  height: 'clamp(12px, 2.5vw, 20px)',
+                                  minWidth: 'clamp(12px, 2.5vw, 20px)',
+                                  background: 'rgba(194,0,0,0.18)',
+                                  border: '1px solid rgba(194,0,0,0.32)',
+                                }}
                               >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
+                                <ItemIcon
+                                  className="text-[#c20000]"
+                                  style={{ width: 'clamp(6px, 1.4vw, 11px)', height: 'clamp(6px, 1.4vw, 11px)' }}
+                                  strokeWidth={2.5}
+                                />
+                              </div>
+                              <span
+                                className="text-white/65 uppercase"
+                                style={{
+                                  fontFamily: 'Geist, sans-serif',
+                                  fontSize: 'clamp(5px, 1.1vw, 9px)',
+                                  fontWeight: 500,
+                                  letterSpacing: '0.06em',
+                                  lineHeight: 1.2,
+                                }}
+                              >
+                                {item.badge}
+                              </span>
                             </div>
-                            <span
-                              className="text-xs font-light text-white/80"
-                              style={{ fontFamily: 'Geist, sans-serif' }}
-                            >
-                              {item}
-                            </span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
-                      {/* CTA Button */}
-                      <button
-                        className="w-full rounded-lg bg-[#EA0000] px-6 py-3.5 text-xs font-bold tracking-wide text-white uppercase shadow-lg"
+                      {/* CTA */}
+                      <a
+                        href="https://001k.exchange/your_bot"
+                        className="block w-full rounded-lg text-white transition-opacity duration-300 hover:opacity-70"
                         style={{
+                          background: 'linear-gradient(135deg, #c20000, #8a0000)',
+                          boxShadow: '0 6px 18px rgba(194,0,0,0.38)',
                           fontFamily: 'Geist, sans-serif',
-                          boxShadow: '0 8px 24px rgba(234,0,0,0.4)',
+                          fontSize: 'clamp(6px, 1.3vw, 10px)',
+                          fontWeight: 700,
+                          letterSpacing: '0.08em',
+                          textTransform: 'uppercase',
+                          padding: 'clamp(5px, 1.1vw, 12px) clamp(6px, 1.5vw, 16px)',
+                          textAlign: 'center',
                         }}
                       >
                         Получить бесплатно
-                      </button>
+                      </a>
                     </div>
                   </div>
 
                   {/* Notch */}
-                  <div className="absolute top-0 left-1/2 h-7 w-36 -translate-x-1/2 rounded-b-3xl bg-black" />
+                  <div
+                    className="absolute top-0 left-1/2 -translate-x-1/2 rounded-b-2xl bg-black"
+                    style={{
+                      height: 'clamp(10px, 2vw, 28px)',
+                      width: 'clamp(40px, 10vw, 144px)',
+                    }}
+                  />
                 </div>
-
-                {/* Phone glow */}
-                <motion.div
-                  className="absolute inset-0 -z-10 rounded-[44px]"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(234,0,0,0.15) 0%, transparent 70%)',
-                    filter: 'blur(40px)',
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={isReady && !reduceMotion ? { opacity: [0.3, 0.6, 0.3] } : { opacity: 0.4 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                />
               </div>
             </motion.div>
 
-            {/* RIGHT DOCUMENTS */}
-            <div className="space-y-10">
-              {documents
-                .filter(d => d.position === 'right')
-                .map((doc, index) => (
-                  <motion.div
-                    key={`right-${index}`}
-                    className="group relative mx-auto max-w-md md:mr-auto"
-                    initial={{ opacity: 0, x: 60, rotateY: -20 }}
-                    whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.9, delay: index * 0.15 }}
-                    style={{ perspective: '1500px' }}
-                  >
-                    {/* Main document card */}
-                    <div
-                      className="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white p-8 shadow-2xl"
-                      style={{
-                        transform: 'translateZ(0) rotateY(3deg)',
-                        backfaceVisibility: 'hidden',
-                        transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-                        border: '1px solid rgba(0,0,0,0.06)',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.1)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateZ(25px) rotateY(1deg) translateY(-8px)';
-                        e.currentTarget.style.boxShadow = '0 30px 80px rgba(234,0,0,0.18)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateZ(0) rotateY(3deg)';
-                        e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.12)';
-                      }}
-                    >
-                      {/* Red accent corner */}
-                      <div
-                        className="absolute top-0 left-0 h-24 w-24 opacity-60"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(234,0,0,0.08) 0%, transparent 70%)',
-                        }}
-                      />
-
-                      {/* Icon container */}
-                      <div className="mb-6 flex items-center gap-4">
-                        <div
-                          className={`flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${doc.gradient} shadow-xl`}
-                          style={{
-                            boxShadow: '0 8px 24px rgba(234,0,0,0.3)',
-                            transform: 'translateZ(0)',
-                            transition: 'transform 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.08) translateZ(0)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1) translateZ(0)';
-                          }}
-                        >
-                          <doc.icon className="h-8 w-8 text-white" strokeWidth={2.5} />
-                        </div>
-
-                        {/* Title */}
-                        <div className="flex-1">
-                          <h3
-                            className="text-sm font-black tracking-wider text-black uppercase"
-                            style={{ fontFamily: 'Geist, sans-serif', letterSpacing: '0.05em' }}
-                          >
-                            {doc.title}
-                          </h3>
-                        </div>
-                      </div>
-
-                      {/* Badge */}
-                      <div className="mb-5">
-                        <div
-                          className="inline-block rounded-md bg-[#EA0000] px-3 py-1.5 text-xs font-bold tracking-widest text-white uppercase"
-                          style={{ fontFamily: 'Geist, sans-serif' }}
-                        >
-                          {doc.badge}
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <p
-                        className="text-sm leading-relaxed text-black/70"
-                        style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
-                      >
-                        {doc.text}
-                      </p>
-
-                      {/* Bottom red line */}
-                      <div className="absolute bottom-0 left-0 h-1.5 w-full bg-gradient-to-r from-[#EA0000] via-[#EA0000] to-transparent" />
-
-                      {/* Subtle texture overlay */}
-                      <div
-                        className="pointer-events-none absolute inset-0 opacity-[0.015]"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                        }}
-                      />
-                    </div>
-
-                    {/* Paper stack shadow layers */}
-                    <div
-                      className="absolute inset-0 -z-10 bg-white"
-                      style={{
-                        transform: 'translateZ(-8px) translateX(-6px) translateY(6px) rotateY(3deg)',
-                        border: '1px solid rgba(0,0,0,0.04)',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-                      }}
-                    />
-                    <div
-                      className="absolute inset-0 -z-20 bg-gray-50"
-                      style={{
-                        transform: 'translateZ(-16px) translateX(-12px) translateY(12px) rotateY(3deg)',
-                        border: '1px solid rgba(0,0,0,0.03)',
-                      }}
-                    />
-                  </motion.div>
-                ))}
-            </div>
           </div>
         </div>
+
+        {/* ─── BOTTOM CTA ─── */}
+        <motion.div
+          className="mt-10 text-center md:mt-14"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-30px' }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <a
+            href="https://001k.exchange/your_bot"
+            className="relative inline-block w-full max-w-2xl overflow-hidden rounded-xl px-6 py-4 text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 hover:shadow-2xl active:scale-[0.99] sm:px-8 sm:py-5 sm:text-base md:text-lg md:tracking-[0.16em]"
+            style={{
+              background: '#c20000',
+              boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
+              fontFamily: 'Geist, sans-serif',
+            }}
+          >
+            <span
+              className="pointer-events-none absolute inset-0 opacity-[0.08]"
+              style={{ background: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)' }}
+            />
+            ПОЛУЧИТЬ ЧЕК-ЛИСТ БЕСПЛАТНО
+          </a>
+        </motion.div>
+
       </div>
     </section>
   );

@@ -89,7 +89,6 @@ export function OldSolutionsSection() {
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Геометрия слева — только opacity, БЕЗ y/rotate (clipPath на CPU) */}
         <motion.div
           className="absolute top-[15%] -left-10 h-80 w-80"
           style={{
@@ -102,7 +101,6 @@ export function OldSolutionsSection() {
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Геометрия справа */}
         <motion.div
           className="absolute top-[50%] -right-10 h-72 w-72"
           style={{

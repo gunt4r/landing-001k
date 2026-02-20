@@ -1,30 +1,54 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
-/* eslint-disable style/multiline-ternary */
+
 /* eslint-disable tailwindcss/enforces-negative-arbitrary-values */
 'use client';
 
 import { motion } from 'motion/react';
-import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
+import AnimatedCounter from './animatedCounter';
 
 function rand(seed: number) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
-export function SecurityBlock() {
-  const stats = [
-    { icon: '/loss.svg', value: 'Потери от скама', label:
-        'В 2025-м нелегальные потоки в крипте взлетели на 145%, достигнув $158 млрд. Рост убытков от скама — 34%.', highlight: '$17 млрд' },
-    { icon: '/brain.svg', value: 'AI-агрессия', label:
-        'Стала эффективней. Применение Deepfake и авто-фишинга выросла на 1400%.', highlight: 'В 4,5 раза' },
-    { icon: '/dollar.svg', value: 'Происхождение средств', label:
-        'Вероятность запроса документов от банка, при переводе от $10 000.', highlight: 'Контроли' },
-    { icon: '/lock.svg', value: 'Блокировка счета', label:
-        'Риск блокировок британских банков для транзакций с криптоактивами.', highlight: 'Блокировки' },
-  ];
+const stats = [
+  {
+    number: <AnimatedCounter start={0} end={17} duration={3} prefix="$" />,
+    unit: 'млрд',
+    title: 'Потери от скама',
+    label:
+      'В 2025-м нелегальные потоки в крипте взлетели на 145%, достигнув $158 млрд. Рост убытков от скама — 34%.',
+    accent: true,
+  },
+  {
+    number: <AnimatedCounter start={0} end={450} duration={3} prefix="+" />,
+    unit: '%',
+    title: 'AI-агрессия',
+    label:
+      'Стала эффективней. Применение Deepfake и авто-фишинга выросло на 1400%.',
+    accent: false,
+  },
+  {
+    number: <AnimatedCounter start={0} end={80} duration={3} />,
+    unit: '%',
+    title: 'Происхождение средств',
+    label:
+      'Вероятность запроса документов от банка при переводе от $10 000.',
+    accent: false,
+  },
+  {
+    number: <AnimatedCounter start={0} end={40} duration={3} />,
+    unit: '%',
+    title: 'Блокировка счёта',
+    label:
+      'Риск блокировок британских банков для транзакций с криптоактивами.',
+    accent: false,
+  },
+];
 
+export function SecurityBlock() {
   const [heavy, setHeavy] = useState(false);
 
   useEffect(() => {
@@ -44,25 +68,17 @@ export function SecurityBlock() {
       const r1 = rand(i * 3 + 1);
       const r2 = rand(i * 3 + 2);
       const r3 = rand(i * 3 + 3);
-
       const size = i % 2 === 0 ? 6 : 3;
-      const top = `${18 + Math.floor(r1 * 64)}%`;
-      const left = `${8 + Math.floor(r2 * 84)}%`;
-      const dur = 8 + Math.floor(r3 * 6);
-      const xOffset = (r2 - 0.5) * 40;
-      const yOffset = 50 + r3 * 60;
-
       return {
         id: i,
         size,
-        top,
-        left,
-        dur,
-        xOffset,
-        yOffset,
+        top: `${18 + Math.floor(r1 * 64)}%`,
+        left: `${8 + Math.floor(r2 * 84)}%`,
+        dur: 8 + Math.floor(r3 * 6),
+        xOffset: (r2 - 0.5) * 40,
+        yOffset: 50 + r3 * 60,
         color: i % 2 === 0 ? 'rgba(234,0,0,0.75)' : 'rgba(255,255,255,0.16)',
-        shadow:
-          i % 2 === 0 ? '0 0 10px rgba(234,0,0,0.35)' : '0 0 8px rgba(255,255,255,0.06)',
+        shadow: i % 2 === 0 ? '0 0 10px rgba(234,0,0,0.35)' : '0 0 8px rgba(255,255,255,0.06)',
         delay: i * 0.5,
       };
     });
@@ -79,46 +95,42 @@ export function SecurityBlock() {
         }}
       />
 
-      {heavy
-        ? (
-            <>
-              <motion.div
-                className="absolute top-[8%] -left-[4%] h-[260px] w-[260px] rounded-2xl"
-                style={{
-                  background:
-                'linear-gradient(135deg, rgba(234,0,0,0.08) 0%, rgba(0,0,0,0.02) 100%)',
-                  clipPath: 'polygon(0% 20%, 70% 0%, 100% 30%, 80% 100%, 0% 85%)',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity',
-                }}
-                animate={{ y: [0, 18, 0], rotateZ: [0, 3, 0] }}
-                transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-              />
-
-              <motion.div
-                className="absolute top-[38%] -right-[3%] h-[220px] w-[220px] rounded-2xl"
-                style={{
-                  background: 'linear-gradient(225deg, rgba(0,0,0,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-                  clipPath: 'polygon(20% 0%, 100% 10%, 100% 100%, 10% 90%)',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity',
-                }}
-                animate={{ y: [0, -20, 0], rotateZ: [0, -2.5, 0] }}
-                transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              />
-
-              <motion.div
-                className="absolute top-[18%] right-[12%] h-[140px] w-[140px] rounded-full"
-                style={{
-                  background: 'radial-gradient(circle, rgba(234,0,0,0.16) 0%, transparent 60%)',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity',
-                }}
-                animate={{ scale: [1, 1.18, 1], opacity: [0.45, 0.9, 0.45] }}
-                transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-              />
-            </>
-          ) : null}
+      {heavy && (
+        <>
+          <motion.div
+            className="absolute top-[8%] -left-[4%] h-[260px] w-[260px] rounded-2xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(234,0,0,0.08) 0%, rgba(0,0,0,0.02) 100%)',
+              clipPath: 'polygon(0% 20%, 70% 0%, 100% 30%, 80% 100%, 0% 85%)',
+              transform: 'translateZ(0)',
+              willChange: 'transform, opacity',
+            }}
+            animate={{ y: [0, 18, 0], rotateZ: [0, 3, 0] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute top-[38%] -right-[3%] h-[220px] w-[220px] rounded-2xl"
+            style={{
+              background: 'linear-gradient(225deg, rgba(0,0,0,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+              clipPath: 'polygon(20% 0%, 100% 10%, 100% 100%, 10% 90%)',
+              transform: 'translateZ(0)',
+              willChange: 'transform, opacity',
+            }}
+            animate={{ y: [0, -20, 0], rotateZ: [0, -2.5, 0] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+          />
+          <motion.div
+            className="absolute top-[18%] right-[12%] h-[140px] w-[140px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(234,0,0,0.16) 0%, transparent 60%)',
+              transform: 'translateZ(0)',
+              willChange: 'transform, opacity',
+            }}
+            animate={{ scale: [1, 1.18, 1], opacity: [0.45, 0.9, 0.45] }}
+            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </>
+      )}
 
       {particles.map(p => (
         <motion.div
@@ -135,22 +147,13 @@ export function SecurityBlock() {
             willChange: 'transform, opacity',
             borderRadius: '9999px',
           }}
-          animate={{
-            y: [0, -p.yOffset, 0],
-            x: [0, p.xOffset, 0],
-            opacity: [0, 1, 0],
-            scale: [0.6, 1.1, 0.6],
-          }}
-          transition={{
-            duration: p.dur,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: p.delay,
-          }}
+          animate={{ y: [0, -p.yOffset, 0], x: [0, p.xOffset, 0], opacity: [0, 1, 0], scale: [0.6, 1.1, 0.6] }}
+          transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
         />
       ))}
 
       <div className="relative container mx-auto max-w-7xl px-6">
+        {/* Heading */}
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -161,9 +164,7 @@ export function SecurityBlock() {
           <h2 className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl">
             Старые правила больше
             <span className="relative ml-2 inline-block">
-              <span className="relative z-10">
-                не работают
-              </span>
+              <span className="relative z-10">не работают</span>
               <motion.span
                 className="absolute bottom-0 left-0 h-2 w-full"
                 initial={{ scaleX: 0 }}
@@ -180,6 +181,7 @@ export function SecurityBlock() {
           </h2>
         </motion.div>
 
+        {/* Subheading */}
         <motion.div
           className="mb-10 max-w-3xl"
           initial={{ opacity: 0, y: 10 }}
@@ -197,12 +199,12 @@ export function SecurityBlock() {
               style={{ transformOrigin: 'top' }}
             />
             <p className="text-lg leading-relaxed text-white/85">
-              В 2026 году индустрия перешла на этап тотального комплаенса. То, что раньше считалось «безопасной сделкой»,
-              сегодня попадает под автоматические фильтры мониторинга.
+              В 2026 году индустрия перешла на жесткий контроль. Вчерашние безопасные сделки сегодня попадают под фильтры мониторинга.
             </p>
           </div>
         </motion.div>
 
+        {/* Cards */}
         <div className="mb-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <motion.div
@@ -214,24 +216,59 @@ export function SecurityBlock() {
               transition={{ duration: 0.55, delay: index * 0.08 }}
               whileHover={heavy ? { y: -6 } : {}}
             >
-              <div className="relative z-10 p-4">
-                <div className="mb-3 flex items-center gap-4">
-                  <div className="rounded-xl border border-[#222] bg-[#0a0a0a] p-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#c20000]">
-                      <Image className="" src={stat.icon} alt="icon" width={20} height={20} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-extrabold text-[#c20000]">{stat.value}</div>
-                    <div className="mt-1 inline-block rounded-full bg-[#c20000] px-3 py-1 text-xs font-semibold text-black">
-                      {stat.highlight}
-                    </div>
-                  </div>
+              {stat.accent && (
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-2xl"
+                  style={{
+                    background: 'radial-gradient(ellipse at 30% 20%, rgba(194,0,0,0.12) 0%, transparent 65%)',
+                  }}
+                />
+              )}
+
+              <div className="relative z-10">
+                <div className="mb-4 flex items-end gap-1 leading-none">
+                  <span
+                    className="font-extrabold tracking-tight"
+                    style={{
+                      fontSize: 'clamp(2.8rem, 5vw, 4rem)',
+                      color: stat.accent ? '#c20000' : '#ffffff',
+                      lineHeight: 1,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {stat.number}
+                  </span>
+                  <span
+                    className="mb-1 font-bold"
+                    style={{
+                      fontSize: 'clamp(1.2rem, 2vw, 1.6rem)',
+                      color: stat.accent ? 'rgba(194,0,0,0.8)' : 'rgba(255,255,255,0.45)',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {stat.unit}
+                  </span>
                 </div>
 
-                <p className="text-sm leading-relaxed text-white/80">{stat.label}</p>
+                <div
+                  className="mb-4 h-px w-full"
+                  style={{
+                    background: stat.accent
+                      ? 'linear-gradient(90deg, #c20000, transparent)'
+                      : 'linear-gradient(90deg, rgba(255,255,255,0.12), transparent)',
+                  }}
+                />
+
+                {/* Title */}
+                <div className="mb-2 text-sm font-semibold tracking-widest text-white/50 uppercase">
+                  {stat.title}
+                </div>
+
+                {/* Description */}
+                <p className="text-sm leading-relaxed text-white/70">{stat.label}</p>
               </div>
 
+              {/* Hover overlay */}
               <motion.div
                 className="pointer-events-none absolute inset-0 opacity-0"
                 style={{
