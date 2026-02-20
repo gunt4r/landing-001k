@@ -45,7 +45,7 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
   return (
     <div
       className="relative shrink-0"
-      style={{ width: isMobile ? 'min(326px, 52vw)' : 'clamp(200px, 26vw, 310px)' }}
+      style={{ width: isMobile ? 'min(326px, 50vw)' : 'clamp(200px, 26vw, 310px)' }}
     >
       <div
         className="pointer-events-none absolute inset-0 -z-10"
@@ -225,7 +225,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     <div className="relative">
 
       <div
-        className="sticky flex flex-row items-center gap-3"
+        className="sticky flex flex-row items-center gap-3 [@media(max-width:400px)]:gap-2"
       >
 
         <div className="min-w-0 flex-1">
@@ -247,7 +247,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     key={`icon-${activeIndex}`}
                     className="relative flex shrink-0 items-center justify-center self-stretch overflow-hidden"
                     style={{
-                      width: '35px',
+                      width: '30px',
                       background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)',
                     }}
                     initial={{ opacity: 0 }}
@@ -263,7 +263,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                   </motion.div>
                 </AnimatePresence>
 
-                <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-2">
+                <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:pr-2 [@media(max-width:400px)]:pl-1">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeIndex}
