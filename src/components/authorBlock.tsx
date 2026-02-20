@@ -22,9 +22,10 @@ export function AuthorBlock() {
   }, []);
 
   const achievements = [
-    { number: '01', title: 'Маркетолог. Growth Hacker' },
-    { number: '02', title: 'Бывший топ-менеджер Meta ASP' },
-    { number: '03', title: 'БОЛЕЕ $800M+', subtitle: 'Помог инвестировать своим клиентам в рекламу с положительным ROI' },
+    { number: '01', title: 'Основатель экосистемы 001k: exchange, bot, trade' },
+    { number: '02', title: '10 лет в крипте', subtitle: 'практическая экспертиза в безопасности и риск-менеджменте' },
+    { number: '03', title: '400 000+', subtitle: 'подписчиков в Instagram.' },
+    { number: '04', title: '116 000+', subtitle: 'трейдеров в сообществе.' },
   ];
 
   const particles = useMemo(() => {
@@ -114,7 +115,7 @@ export function AuthorBlock() {
       <div className="relative z-10 container mx-auto max-w-7xl px-6">
 
         <motion.div
-          className="mb-16 text-center"
+          className="mb-8 text-center sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -124,7 +125,7 @@ export function AuthorBlock() {
             className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif', letterSpacing: '0.02em' }}
           >
-            АВТОР КУРСА
+            АВТОР
           </h2>
         </motion.div>
 
@@ -148,7 +149,7 @@ export function AuthorBlock() {
             <div className="relative ml-auto aspect-3/4 max-w-md overflow-hidden lg:mx-auto">
 
               <div
-                className="absolute top-6 left-[35%] z-20 text-sm font-light tracking-[0.25em] text-white sm:left-6 sm:text-xs"
+                className="absolute top-6 left-[2%] z-20 text-sm font-light tracking-[0.25em] text-white sm:left-6 sm:text-xs"
                 style={{ fontFamily: 'Geist, sans-serif' }}
               >
                 // about
@@ -161,12 +162,12 @@ export function AuthorBlock() {
                 <div className="text-2xl font-black tracking-[0.08em] text-white uppercase sm:text-4xl md:text-5xl">
                   СЕРЕГА
                 </div>
-                <div className="text-2xl font-black tracking-[0.08em] text-white uppercase sm:text-4xl md:text-5xl">
+                <div className="text-left text-2xl font-black tracking-[0.08em] text-white uppercase sm:text-right sm:text-4xl md:text-5xl">
                   001К
                 </div>
               </div>
 
-              <div className="relative ml-auto h-full w-4/6 bg-gray-900 sm:h-full sm:w-full">
+              <div className="relative ml-auto h-full w-full bg-gray-900 sm:h-full sm:w-full">
                 <Image
                   src="/client.png"
                   alt="Серега 001к"
@@ -186,7 +187,7 @@ export function AuthorBlock() {
               </div>
 
               <div
-                className="absolute top-0 left-2/6 h-20 w-20 sm:left-0"
+                className="absolute top-0 left-0 sm:left-2/6 h-20 w-20 sm:left-0"
                 style={{
                   background: 'linear-gradient(135deg, rgba(234,0,0,0.3) 0%, transparent 70%)',
                   clipPath: 'polygon(0% 0%, 100% 0%, 0% 100%)',
@@ -210,7 +211,7 @@ export function AuthorBlock() {
 
             {isReady && !reduceMotion && (
               <motion.div
-                className="absolute -right-8 -bottom-8 h-28 w-28 rounded-full border-3 border-[#EA0000]/30"
+                className="absolute -right-8 -bottom-8 h-28 w-28 rounded-full border-3 border-[#c20000]/30"
                 animate={{
                   rotate: 360,
                   scale: [1, 1.12, 1],
@@ -238,7 +239,7 @@ export function AuthorBlock() {
                 transition={{ duration: 0.6, delay: index * 0.12 }}
               >
                 <div
-                  className="relative flex items-center gap-2 sm:gap-5 overflow-hidden p-1 sm:p-6 md:p-8"
+                  className="relative flex items-center gap-2 overflow-hidden p-1 sm:gap-5 sm:p-6 md:p-8"
                   style={{
                     transform: 'translateZ(0)',
                     backfaceVisibility: 'hidden',
@@ -247,7 +248,7 @@ export function AuthorBlock() {
                 >
 
                   <div
-                    className="mb-3 text-sm font-bold tracking-[0.3em] text-[#EA0000]/70"
+                    className="mb-3 text-sm font-bold tracking-[0.3em] text-[#c20000]/70"
                     style={{ fontFamily: 'Geist, sans-serif' }}
                   >
                     (
@@ -257,14 +258,14 @@ export function AuthorBlock() {
 
                   <div className="flex flex-col">
                     <h3
-                      className="mb-1 text-xl leading-[1.1] font-black text-white uppercase sm:text-3xl md:text-xl"
+                      className="mb-1 text-base leading-[1.1] font-black text-white uppercase sm:text-3xl md:text-xl"
                       style={{ fontFamily: 'Geist, sans-serif', letterSpacing: '0.02em' }}
                     >
                       {achievement.title}
                     </h3>
                     {achievement.subtitle && (
                       <p
-                        className="text-white/70"
+                        className="text-xs text-white/70 sm:text-sm md:text-base"
                         style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
                       >
                         {achievement.subtitle}

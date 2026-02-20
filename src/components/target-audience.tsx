@@ -46,16 +46,14 @@ export function TargetAudienceSection() {
   }, [prefersReducedMotion]);
 
   const benefits = [
-    'Крупные переводы ($10,000+): Вы регулярно перемещаете значительные суммы для бизнеса, покупки активов или содержания семьи за рубежом.',
-    'Использование P2P-площадок: Вы часто принимаете фиатные средства от частных лиц, не имея полной информации об источнике их происхождения.',
-    'Отсутствие комплаенс-базы: У вас нет готового пакета документов на случай внезапного запроса от банка.',
-    'Активная жизнь в Европе/ОАЭ: Вы оплачиваете расходы картами, которые пополняются через крипто-обменные операции.',
+    'Переводы $10,000+: Вы регулярно перемещаете суммы для бизнеса, покупки активов или содержания семьи за рубежом.',
+    'Использование P2P-площадок: Вы принимаете фиатные средства от частных лиц, не имея полной информации об источнике их происхождения.',
+    'Отсутствие документов: У вас нет готового пакета документов, на случай внезапного запроса от банка.',
+    'Резиденты Европы/ОАЭ: Вы оплачиваете расходы с карт, которые пополняются через крипто-обмен.',
   ];
 
-  // icons mapped by benefit order — легко изменить
   const icons = [DollarSign, Users, FileText, Globe];
 
-  // small utility to generate array for particles / ribbons
   const arr = (n: number) => Array.from({ length: n }).map((_, i) => i);
 
   return (
@@ -66,7 +64,7 @@ export function TargetAudienceSection() {
     >
       <style>
         {`
-        :root { --accent: #EA0000; }
+        :root { --accent: #c20000; }
 
         .coin {
           width: 64px;
@@ -231,7 +229,7 @@ export function TargetAudienceSection() {
       <div className="relative z-10 mx-auto max-w-4xl">
         <div className={`mb-10 text-center ${revealed ? 'reveal' : 'pre-reveal'}`}>
           <h2 id="ta-heading" className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl">
-            Кому важно пересмотреть свою стратегию безопасности?
+            Кому критично пересмотреть стратегию?
           </h2>
         </div>
 

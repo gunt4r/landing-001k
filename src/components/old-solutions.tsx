@@ -27,20 +27,20 @@ export function OldSolutionsSection() {
     {
       name: 'Финтех-платформы',
       subtitle: 'Wise, Revolut',
-      risk: 'Усиление мониторинга привело к тому, что транзакции анализируются по сотням параметров. Ошибка в структурировании суммы может привести к блокировке капитала на срок до 60 дней.',
-      icon: <Image src={Revolut} className="invert" alt="Revolut" width={40} height={40} />,
+      risk: 'Усиление мониторинга по сотням параметров (от device fingerprinting до частоты платежей). Ошибка в сумме может привести к блокировке капитала до 60 дней.',
+      icon: <Image src={Revolut} className="size-5 invert" alt="Revolut" width={40} height={40} />,
     },
     {
       name: 'P2P-рынок',
       subtitle: 'Риски цепочек',
-      risk: 'Классические схемы «треугольник» и фрод с чарджбэками стали профессиональнее. Получение средств от непроверенного лица может привести к вопросам со стороны правоохранительных органов.',
-      icon: <Repeat className="h-full w-6 text-white" />,
+      risk: 'Схемы «треугольник» и чарджбэки эволюционировали. Получение средств от непроверенного лица в Европе — риск блокировки и уголовного дела.',
+      icon: <Repeat className="size-5 text-white" />,
     },
     {
       name: 'SWIFT-переводы',
       subtitle: 'Банковские каналы',
-      risk: 'Банковский перевод незнакомому контрагенту — один из самых частых триггеров для SoF-запросов и заморозок, особенно при суммах от $10,000.',
-      icon: <Landmark className="h-full w-6 text-white" />,
+      risk: 'Перевод незнакомому контрагенту при суммах от $10,000 — один из основных триггеров для запросов источника средств и заморозок капитала.',
+      icon: <Landmark className="size-5 text-white" />,
     },
   ];
 
@@ -183,15 +183,15 @@ export function OldSolutionsSection() {
           transition={{ duration: 0.6 }}
         >
           <h2
-            className="mb-6 text-4xl font-black text-black md:text-5xl lg:text-6xl"
+            className="mt-2 mb-6 text-3xl leading-tight font-bold text-black md:text-4xl lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif' }}
           >
-            Как вчерашние лайфхаки становятся
+            Блокировка — не риск, а
             {' '}
             <span className="relative inline-block">
-              <span className="relative z-10">триггерами блокировок</span>
+              <span className="relative z-10">вопрос времени</span>
               <motion.span
-                className="absolute bottom-0 left-0 h-4 w-full bg-[#EA0000]/20"
+                className="absolute bottom-0 left-0 h-4 w-full bg-[#c20000]/20"
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
@@ -199,8 +199,6 @@ export function OldSolutionsSection() {
                 style={{ transformOrigin: 'left' }}
               />
             </span>
-            {' '}
-            сегодня
           </h2>
 
           <motion.p
@@ -211,8 +209,7 @@ export function OldSolutionsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Методы, которые казались безопасными два года назад, сегодня внесены в стоп-листы
-            всех крупных финтех-компаний. Использование их — это не риск, а вопрос времени.
+            Методы, которые казались безопасными два года назад, сегодня внесены в стоп-листы всех крупных финтех-компаний.
           </motion.p>
         </motion.div>
 
@@ -253,14 +250,14 @@ export function OldSolutionsSection() {
                 />
 
                 <div className="mb-3 flex items-center gap-4">
-                  <div className="rounded-xl border border-[#222] bg-[#EA0000] p-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#000]/60">
+                  <div className="rounded-xl border border-[#222] bg-[#c20000] p-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-black/15">
                       {solution.icon}
                     </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-extrabold text-[#EA0000]">{solution.name}</div>
-                    <div className="mt-1 inline-block rounded-full bg-[#000]/70 px-3 py-1 text-xs font-semibold text-white">
+                    <div className="text-lg font-extrabold text-[#c20000]">{solution.name}</div>
+                    <div className="mt-1 inline-block rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
                       {solution.subtitle}
                     </div>
                   </div>

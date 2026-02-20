@@ -33,14 +33,11 @@ export function FomoSection() {
           animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
         >
-          Вы можете считать, что происходящее вас не затронет.
+          Ты можешь продолжать играть в финансовую рулетку или разобраться
           {' '}
-          <br />
-          {' '}
-          Либо внимательно разобраться в правилах и осознанно снизить возможные риски.
+          <span className="font-bold">в правилах игры и минимизировать риск</span>
         </motion.p>
 
-        {/* ─── CTA КНОПКА ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -48,12 +45,10 @@ export function FomoSection() {
         >
           <a
             href="https://t.me/your_bot"
-            className="group inline-flex items-center gap-4 rounded-full bg-[#EA0000] px-12 py-6 text-xl text-white shadow-lg md:text-2xl"
+            className="group inline-flex items-center gap-4 rounded-full bg-[#c20000] px-12 py-6 text-xl text-white shadow-lg md:text-2xl"
             style={{
               fontFamily: 'Geist, sans-serif',
               fontWeight: 600,
-              // ❌ whileHover scale через Framer Motion → мигание на Android
-              // ✅ CSS transition для shadow и background
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden',
               transition: 'background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease',
@@ -66,7 +61,7 @@ export function FomoSection() {
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget;
-              el.style.backgroundColor = '#EA0000';
+              el.style.backgroundColor = '#c20000';
               el.style.boxShadow = '';
               el.style.transform = 'scale(1) translateZ(0)';
             }}
@@ -79,7 +74,7 @@ export function FomoSection() {
               el.style.transform = 'scale(1) translateZ(0)';
             }}
           >
-            <span>Перейти в Telegram-бот</span>
+            <span>ПЕРЕЙТИ В БОТА</span>
             <ArrowRight
               className="h-6 w-6"
               style={{

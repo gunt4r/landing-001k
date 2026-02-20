@@ -46,7 +46,7 @@ export function Header() {
 
         <a
           href="https://t.me/your_bot"
-          className="rounded-full bg-[#EA0000] px-6 py-3 leading-[18px] text-white shadow-sm"
+          className="rounded-full bg-[#c20000] px-6 py-3 leading-[18px] text-white shadow-sm"
           style={{
             fontFamily: 'Geist, sans-serif',
             fontWeight: 600,
@@ -56,7 +56,7 @@ export function Header() {
             (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(234,0,0,0.85)';
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#EA0000';
+            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#c20000';
           }}
         >
           Telegram-бот

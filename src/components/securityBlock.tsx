@@ -15,14 +15,14 @@ function rand(seed: number) {
 
 export function SecurityBlock() {
   const stats = [
-    { icon: '/loss.svg', value: '$17 млрд', label:
-        'Общий объем нелегальных потоков — $158 млрд, что на 145% выше показателей прошлого года.', highlight: 'убытки в 2025 году' },
-    { icon: '/brain.svg', value: 'В 4,5 раза', label:
-        'Схемы с применением нейросетей стали эффективней. Использование Deepfake выросло на 1400%.', highlight: 'ИИ-агрессия' },
-    { icon: '/dollar.svg', value: 'Контроли', label:
-        'При операциях от $10 000 вероятность запроса происхождения средств составляет 80%.', highlight: 'происхождение средств' },
-    { icon: '/lock.svg', value: 'Блокировки', label:
-        'Британские банки блокируют 40% транзакций, связанных с крипто-активами.', highlight: 'AML-риск' },
+    { icon: '/loss.svg', value: 'Потери от скама', label:
+        'В 2025-м нелегальные потоки в крипте взлетели на 145%, достигнув $158 млрд. Рост убытков от скама — 34%.', highlight: '$17 млрд' },
+    { icon: '/brain.svg', value: 'AI-агрессия', label:
+        'Стала эффективней. Применение Deepfake и авто-фишинга выросла на 1400%.', highlight: 'В 4,5 раза' },
+    { icon: '/dollar.svg', value: 'Происхождение средств', label:
+        'Вероятность запроса документов от банка, при переводе от $10 000.', highlight: 'Контроли' },
+    { icon: '/lock.svg', value: 'Блокировка счета', label:
+        'Риск блокировок британских банков для транзакций с криптоактивами.', highlight: 'Блокировки' },
   ];
 
   const [heavy, setHeavy] = useState(false);
@@ -159,11 +159,10 @@ export function SecurityBlock() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="mt-2 text-3xl leading-tight font-bold text-white md:text-4xl lg:text-5xl">
-            Почему старые правила безопасности
+            Старые правила больше
             <span className="relative ml-2 inline-block">
               <span className="relative z-10">
-                больше не защищают
-                {' '}
+                не работают
               </span>
               <motion.span
                 className="absolute bottom-0 left-0 h-2 w-full"
@@ -178,7 +177,6 @@ export function SecurityBlock() {
               />
             </span>
             {' '}
-            ваш капитал?
           </h2>
         </motion.div>
 
@@ -189,9 +187,9 @@ export function SecurityBlock() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
         >
-          <div className="relative border-l-4 border-[#EA0000] pl-6">
+          <div className="relative border-l-4 border-[#c20000] pl-6">
             <motion.div
-              className="absolute top-0 left-0 h-full w-1 bg-[#EA0000]"
+              className="absolute top-0 left-0 h-full w-1 bg-[#c20000]"
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
@@ -219,13 +217,13 @@ export function SecurityBlock() {
               <div className="relative z-10 p-4">
                 <div className="mb-3 flex items-center gap-4">
                   <div className="rounded-xl border border-[#222] bg-[#0a0a0a] p-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#EA0000]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#c20000]">
                       <Image className="" src={stat.icon} alt="icon" width={20} height={20} />
                     </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-extrabold text-[#EA0000]">{stat.value}</div>
-                    <div className="mt-1 inline-block rounded-full bg-[#EA0000] px-3 py-1 text-xs font-semibold text-black">
+                    <div className="text-lg font-extrabold text-[#c20000]">{stat.value}</div>
+                    <div className="mt-1 inline-block rounded-full bg-[#c20000] px-3 py-1 text-xs font-semibold text-black">
                       {stat.highlight}
                     </div>
                   </div>

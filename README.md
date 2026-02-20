@@ -16,7 +16,7 @@
 - ⚡ **3D Background Effects** - Floating geometric shapes with smooth animations
 - 💫 **Framer Motion Integration** - Advanced scroll-based animations and micro-interactions
 - 🎭 **Premium UI Components** - Custom-designed cards, buttons, and layouts
-- 🌈 **Minimalist Color Palette** - Professional black (#000), white (#fff), and red (#EA0000) theme
+- 🌈 **Minimalist Color Palette** - Professional black (#000), white (#fff), and red (#c20000) theme
 - 📱 **Fully Responsive** - Optimized for mobile, tablet, and desktop
 - 🎯 **Accessibility** - WCAG compliant with proper ARIA labels
 
@@ -115,7 +115,7 @@ The project uses a strict 3-color palette defined in Tailwind config:
 // Primary colors
 #000000  // Black - Main text, borders
 #FFFFFF  // White - Backgrounds, cards
-#EA0000  // Red - Accent color, CTAs
+#c20000  // Red - Accent color, CTAs
 ```
 
 ### Content

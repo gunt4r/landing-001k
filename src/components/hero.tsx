@@ -268,11 +268,7 @@ export function HeroSection() {
             className="mb-8 text-5xl leading-tight text-black md:text-6xl lg:text-7xl xl:text-8xl"
             style={{ fontFamily: 'Geist, sans-serif', fontWeight: 900 }}
           >
-            Как не потерять $20,000: 7 схем, которые обнуляют ваш капитал в
-            {' '}
-            {new Date().getFullYear()}
-            {' '}
-            году
+            Как не потерять $20,000
           </motion.h1>
 
           <motion.p
@@ -280,15 +276,17 @@ export function HeroSection() {
             className="mb-12 max-w-3xl text-lg leading-relaxed text-black/60"
             style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
           >
-            Практический разбор от Сереги 001к: 7 актуальных схем: от AI-дипфейков
-            до скрытой «грязи» в P2P, из-за которой объем украденных средств
-            достигает $17 млрд.
+            Разбор от Сереги 001к: 7 схем потери капитала в
+            {' '}
+            {new Date().getFullYear()}
+            {' '}
+            году
           </motion.p>
 
           <motion.div variants={item}>
             <a
               href="https://t.me/your_bot"
-              className="group inline-flex items-center gap-3 rounded-full bg-[#EA0000] px-10 py-5 text-lg text-white shadow-lg md:text-xl"
+              className="group inline-flex items-center gap-3 rounded-full bg-[#c20000] px-10 py-5 text-lg text-white shadow-lg md:text-xl"
               style={{
                 fontFamily: 'Geist, sans-serif',
                 fontWeight: 600,
@@ -301,11 +299,11 @@ export function HeroSection() {
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget;
-                el.style.backgroundColor = '#EA0000';
+                el.style.backgroundColor = '#c20000';
                 el.style.boxShadow = '';
               }}
             >
-              <span>Перейти в Telegram-бот</span>
+              <span>ПЕРЕЙТИ В БОТА</span>
               <ArrowRight
                 className="h-5 w-5"
                 style={{ transition: 'transform 0.2s ease' }}
