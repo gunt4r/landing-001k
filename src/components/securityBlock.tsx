@@ -153,7 +153,7 @@ export function SecurityBlock() {
       ))}
 
       <div className="relative container mx-auto max-w-7xl px-6">
-        {/* Heading */}
+
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -181,7 +181,6 @@ export function SecurityBlock() {
           </h2>
         </motion.div>
 
-        {/* Subheading */}
         <motion.div
           className="mb-10 max-w-3xl"
           initial={{ opacity: 0, y: 10 }}
@@ -204,7 +203,6 @@ export function SecurityBlock() {
           </div>
         </motion.div>
 
-        {/* Cards */}
         <div className="mb-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <motion.div
@@ -259,16 +257,13 @@ export function SecurityBlock() {
                   }}
                 />
 
-                {/* Title */}
                 <div className="mb-2 text-sm font-semibold tracking-widest text-white/50 uppercase">
                   {stat.title}
                 </div>
 
-                {/* Description */}
                 <p className="text-sm leading-relaxed text-white/70">{stat.label}</p>
               </div>
 
-              {/* Hover overlay */}
               <motion.div
                 className="pointer-events-none absolute inset-0 opacity-0"
                 style={{

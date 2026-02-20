@@ -143,27 +143,6 @@ function rand(seed: number) {
 
 ### Basic Page Structure
 
-```tsx
-import { Background3D } from '@/components/Background3D-Premium';
-import { HeroBlock } from '@/components/HeroBlock';
-import { SecurityBlock } from '@/components/SecurityBlock';
-// ... other imports
-
-export default function LandingPage() {
-  return (
-    <div className="relative min-h-screen">
-      <Background3D />
-
-      <main className="relative z-10">
-        <HeroBlock />
-        <SecurityBlock />
-        {/* Add more sections */}
-      </main>
-    </div>
-  );
-}
-```
-
 ### Individual Components
 
 Each component can be used independently:

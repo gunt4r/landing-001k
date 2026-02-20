@@ -14,7 +14,7 @@ export function FomoSection() {
 
   return (
     <section className="relative overflow-hidden px-6 py-32 md:px-12 md:py-40 lg:px-24">
-      {/* ─── ФОНОВЫЙ СЛОЙ ─── */}
+
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -25,7 +25,7 @@ export function FomoSection() {
       />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
-        {/* ─── ТЕКСТ ─── */}
+
         <motion.p
           className="mb-12 text-3xl leading-tight text-black md:text-4xl lg:text-5xl"
           style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}

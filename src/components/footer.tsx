@@ -22,14 +22,13 @@ export function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          {/* Logo + tagline */}
+
           <div className="text-center md:text-left">
             <Link href="/">
               <Logo />
             </Link>
           </div>
 
-          {/* Nav links */}
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 md:justify-end">
             {navLinks.map(link => (
               <Link
@@ -43,9 +42,8 @@ export function Footer() {
             ))}
           </nav>
 
-          {/* Socials */}
           <div className="flex items-center gap-4">
-            {/* Telegram Cash */}
+
             <a
               href="tg://resolve?domain=exchange_001k"
               aria-label="Telegram Cash"
@@ -56,7 +54,7 @@ export function Footer() {
                 <path d="M22 2L15 22 11 13 2 9l20-7z" />
               </svg>
             </a>
-            {/* Instagram */}
+
             <a
               href="https://instagram.com/001k.exchange"
               target="_blank"
@@ -70,7 +68,7 @@ export function Footer() {
                 <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
               </svg>
             </a>
-            {/* Telegram Cashless */}
+
             <a
               href="tg://resolve?domain=Pay_1k"
               aria-label="Telegram Cashless"
@@ -81,7 +79,7 @@ export function Footer() {
                 <path d="M22 2L15 22 11 13 2 9l20-7z" />
               </svg>
             </a>
-            {/* Email */}
+
             <a
               href="mailto:support@001k.exchange"
               aria-label="Email"
@@ -95,7 +93,7 @@ export function Footer() {
           </div>
         </motion.div>
       </div>
-      {/* Bottom bar */}
+
       <div className="px-6 py-6 md:px-12 lg:px-24">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
           <div

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
@@ -113,7 +114,6 @@ export function OldSolutionsSection() {
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         />
 
-        {/* Red glow — статичный blur */}
         <motion.div
           className="absolute top-[30%] right-[15%] h-64 w-64"
           style={{
@@ -125,7 +125,6 @@ export function OldSolutionsSection() {
           transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Diagonal line */}
         <motion.div
           className="absolute top-[20%] left-[25%] h-96 w-[2px]"
           style={{
@@ -137,7 +136,6 @@ export function OldSolutionsSection() {
           transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Warning particles — треугольники */}
         {isReady && warningParticles.map(particle => (
           <motion.div
             key={particle.id}
@@ -172,7 +170,7 @@ export function OldSolutionsSection() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        {/* ─── ЗАГОЛОВОК ─── */}
+
         <motion.div
           className="mb-16 text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -222,7 +220,7 @@ export function OldSolutionsSection() {
               transition={{ duration: 0.6, delay: index * 0.15 }}
             >
               <div
-                className="relative h-full border-2 border-black/10 bg-gradient-to-br from-white to-gray-50 p-8"
+                className="relative h-full border-2 border-black/10 bg-linear-to-br from-white to-gray-50 p-8"
                 style={{
                   clipPath: 'polygon(0% 0%, 100% 0%, 100% 92%, 92% 100%, 0% 100%)',
                   boxShadow: '0 25px 70px rgba(0,0,0,0.1)',
@@ -261,7 +259,6 @@ export function OldSolutionsSection() {
                   </div>
                 </div>
 
-                {/* Risk description */}
                 <p
                   className="text-sm leading-relaxed text-black/70"
                   style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
@@ -269,7 +266,6 @@ export function OldSolutionsSection() {
                   {solution.risk}
                 </p>
 
-                {/* Hover overlay */}
                 <div
                   className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   style={{
@@ -278,7 +274,6 @@ export function OldSolutionsSection() {
                 />
               </div>
 
-              {/* 3D Shadow — статичный blur */}
               <div
                 className="absolute inset-0 -z-10"
                 style={{

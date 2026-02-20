@@ -247,7 +247,7 @@ export function TargetAudienceSection() {
                 }}
               >
                 <div
-                  className="flex-shrink-0 rounded-full p-1.5"
+                  className="shrink-0 rounded-full p-1.5"
                   style={{
                     background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))',
                     border: '1px solid rgba(255,255,255,0.04)',
@@ -257,7 +257,7 @@ export function TargetAudienceSection() {
                     placeItems: 'center',
                   }}
                 >
-                  {/* Icon is semantic (not purely decorative) — give accessible name */}
+
                   <Icon
                     className="h-5 w-5 text-white"
                     strokeWidth={2.2}
