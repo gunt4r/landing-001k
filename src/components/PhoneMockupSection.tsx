@@ -195,10 +195,15 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
   );
 }
 
+/* ── Pin count: first 4 items are shown step-by-step while section is pinned ── */
+const PIN_COUNT = 5;
+
 function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const sentinelRef = useRef<(HTMLDivElement | null)[]>([]);
+  const stickyContainerRef = useRef<HTMLDivElement | null>(null);
 
+  /* ── IntersectionObserver: one sentinel per pin step ── */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     sentinelRef.current.forEach((el, i) => {
@@ -207,11 +212,11 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
       }
       const obs = new IntersectionObserver(
         (entries) => {
-          if ((entries as any)[0].isIntersecting) {
+          if (entries !== null && entries.length > 0 && entries[0]?.isIntersecting) {
             setActiveIndex(i);
           }
         },
-        { rootMargin: '-40% 0px -40% 0px', threshold: 0 },
+        { rootMargin: '-50% 0px -50% 0px', threshold: 0 },
       );
       obs.observe(el);
       observers.push(obs);
@@ -219,17 +224,56 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  const ActiveIcon = (items as any)[activeIndex].icon;
+  /* ── Keyboard navigation while section is pinned ── */
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (!stickyContainerRef.current) {
+        return;
+      }
+      const rect = stickyContainerRef.current.getBoundingClientRect();
+      // Only handle keys when the pin zone is visible
+      if (rect.top > window.innerHeight || rect.bottom < 0) {
+        return;
+      }
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        window.scrollBy({ top: window.innerHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        window.scrollBy({ top: -window.innerHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [reduceMotion]);
+
+  const ActiveIcon = items[activeIndex]?.icon as any | null;
 
   return (
-    <div className="relative">
+    /* ── Pin container: height = PIN_COUNT * 100vh creates the scroll runway ── */
+    <div ref={stickyContainerRef} style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}>
 
+      {/* ── Sentinels: one per step, each 100vh tall, aria-hidden ── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        {Array.from({ length: PIN_COUNT }, (_, i) => (
+          <div
+            key={i}
+            ref={(el) => {
+              sentinelRef.current[i] = el;
+            }}
+            style={{ height: `${100 / PIN_COUNT}%` }}
+          />
+        ))}
+      </div>
+
+      {/* ── Sticky block: stays fixed while scrolling through the pin zone ── */}
       <div
-        className="sticky flex flex-row items-center gap-3 [@media(max-width:400px)]:gap-2"
+        className="sticky top-[80px] flex h-screen flex-row items-center gap-3 [@media(max-width:400px)]:gap-2"
       >
 
+        {/* ── Left side: content card with aria-live for screen readers ── */}
         <div className="min-w-0 flex-1">
-
           <div
             className="overflow-hidden rounded-xl bg-white"
             style={{
@@ -237,9 +281,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
               boxShadow: '0 4px 24px rgba(0,0,0,0.09)',
             }}
           >
-
             <div className="flex items-stretch">
-
               <div className="flex flex-1 items-center gap-0 overflow-hidden">
 
                 <AnimatePresence mode="wait">
@@ -253,7 +295,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.2 }}
                   >
                     <div
                       className="pointer-events-none absolute inset-0"
@@ -263,20 +305,21 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                   </motion.div>
                 </AnimatePresence>
 
-                <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-0.5">
+                {/* ── aria-live region: announces step changes to screen readers ── */}
+                <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-0.5" aria-live="polite">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeIndex}
                       initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
+                      transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeOut' }}
                     >
                       {items[activeIndex] && (
                         <div>
                           <div className="mb-4">
                             <span
-                              className=" inline-block rounded-md px-2.5 py-1 font-bold tracking-[0.13em] wrap-break-word text-white uppercase"
+                              className="inline-block rounded-md px-2.5 py-1 font-bold tracking-[0.13em] wrap-break-word text-white uppercase"
                               style={{ background: '#c20000', fontFamily: 'Geist, sans-serif', fontSize: 'clamp(12px, 2vw, 24px)', overflowWrap: 'break-word', wordBreak: 'break-word' }}
                             >
                               {items[activeIndex].badge}
@@ -298,19 +341,8 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
           </div>
         </div>
 
+        {/* ── Right side: phone mockup ── */}
         <PhoneMockup activeIndex={activeIndex} size="mobile" />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        {items.map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => {
-              sentinelRef.current[i] = el;
-            }}
-            style={{ height: `${100 / items.length}%` }}
-          />
-        ))}
       </div>
     </div>
   );
@@ -427,7 +459,7 @@ export function PhoneMockupSection() {
   }, [reduceMotion, isDesktop]);
 
   return (
-    <section className="relative overflow-hidden bg-white py-16 md:py-24">
+    <section className="relative bg-white py-16 md:py-24">
 
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0" style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}>
         <div
