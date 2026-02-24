@@ -314,49 +314,44 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                   style={{ background: 'linear-gradient(180deg, #c20000 0%, #ff4444 50%, transparent 100%)' }}
                 />
 
-                <div className="px-5 py-5 pl-3">
-                  {/* Строка: номер + бейдж */}
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <span
-                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-black text-white"
+                <div className="py-5 pr-2 pl-2">
+                  <div className="mb-3 flex items-center justify-between gap-1">
+                    <span
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-black text-white"
+                      style={{
+                        background: 'linear-gradient(135deg, #c20000, #8a0000)',
+                        fontFamily: 'Geist, sans-serif',
+                        fontSize: '10px',
+                        boxShadow: '0 2px 8px rgba(194,0,0,0.35)',
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      {String(activeIndex + 1).padStart(2, '0')}
+                    </span>
+
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={`badge-${activeIndex}`}
+                        className="inline-block rounded-md px-2 py-0.5 text-center font-extrabold tracking-[0.12em] uppercase"
                         style={{
-                          background: 'linear-gradient(135deg, #c20000, #8a0000)',
+                          background: 'rgba(194,0,0,0.08)',
+                          color: '#c20000',
                           fontFamily: 'Geist, sans-serif',
-                          fontSize: '10px',
-                          boxShadow: '0 2px 8px rgba(194,0,0,0.35)',
-                          letterSpacing: '0.02em',
+                          fontSize: 'clamp(7px, 1.8vw, 11px)',
+                          border: '1px solid rgba(194,0,0,0.15)',
                         }}
+                        initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.2 }}
                       >
-                        {String(activeIndex + 1).padStart(2, '0')}
-                      </span>
-
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={`badge-${activeIndex}`}
-                          className="inline-block rounded-md px-2 py-0.5 text-center font-extrabold tracking-[0.12em] uppercase"
-                          style={{
-                            background: 'rgba(194,0,0,0.08)',
-                            color: '#c20000',
-                            fontFamily: 'Geist, sans-serif',
-                            fontSize: 'clamp(7px, 1.8vw, 11px)',
-                            border: '1px solid rgba(194,0,0,0.15)',
-                          }}
-                          initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: reduceMotion ? 0 : 0.2 }}
-                        >
-                          {items[activeIndex]?.badge}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Иконка в кружке */}
+                        {items[activeIndex]?.badge}
+                      </motion.span>
+                    </AnimatePresence>
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`icon-${activeIndex}`}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                        className="flex h-7.5 w-7.5  items-center justify-center rounded-lg"
                         style={{
                           background: 'linear-gradient(135deg, #fff0f0, #ffe0e0)',
                           border: '1px solid rgba(194,0,0,0.12)',
@@ -368,7 +363,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                         transition={{ duration: reduceMotion ? 0 : 0.22, ease: 'backOut' }}
                       >
                         <ActiveIcon
-                          style={{ width: '16px', height: '16px', color: '#c20000' }}
+                          style={{ width: '12px', height: '12px', color: '#c20000' }}
                           strokeWidth={2.25}
                         />
                       </motion.div>
