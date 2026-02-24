@@ -203,7 +203,6 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
   const sentinelRef = useRef<(HTMLDivElement | null)[]>([]);
   const stickyContainerRef = useRef<HTMLDivElement | null>(null);
 
-  /* ── IntersectionObserver: one sentinel per pin step ── */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     sentinelRef.current.forEach((el, i) => {
@@ -212,7 +211,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
       }
       const obs = new IntersectionObserver(
         (entries) => {
-          if (entries !== null && entries.length > 0 && entries[0]?.isIntersecting) {
+          if (entries[0]?.isIntersecting) {
             setActiveIndex(i);
           }
         },
@@ -224,18 +223,15 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  /* ── Keyboard navigation while section is pinned ── */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (!stickyContainerRef.current) {
         return;
       }
       const rect = stickyContainerRef.current.getBoundingClientRect();
-      // Only handle keys when the pin zone is visible
       if (rect.top > window.innerHeight || rect.bottom < 0) {
         return;
       }
-
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
         window.scrollBy({ top: window.innerHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
@@ -248,13 +244,14 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [reduceMotion]);
 
-  const ActiveIcon = items[activeIndex]?.icon as any | null;
+  const ActiveIcon = items[activeIndex]?.icon as any;
+
+  const showChrome = activeIndex > 0 && activeIndex < PIN_COUNT - 1;
 
   return (
-    /* ── Pin container: height = PIN_COUNT * 100vh creates the scroll runway ── */
     <div ref={stickyContainerRef} style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}>
 
-      {/* ── Sentinels: one per step, each 100vh tall, aria-hidden ── */}
+      {/* Sentinels */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         {Array.from({ length: PIN_COUNT }, (_, i) => (
           <div
@@ -267,82 +264,125 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         ))}
       </div>
 
-      {/* ── Sticky block: stays fixed while scrolling through the pin zone ── */}
-      <div
-        className="sticky top-[80px] flex h-screen flex-row items-center gap-3 [@media(max-width:400px)]:gap-2"
-      >
+      <div className="sticky top-0 h-screen overflow-hidden">
 
-        {/* ── Left side: content card with aria-live for screen readers ── */}
-        <div className="min-w-0 flex-1">
-          <div
-            className="overflow-hidden rounded-xl bg-white"
-            style={{
-              border: '1px solid rgba(0,0,0,0.08)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.09)',
-            }}
+        <motion.div
+          className="absolute top-1/10 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
+          initial={false}
+          animate={{
+            opacity: showChrome ? 1 : 0,
+            y: showChrome ? 0 : (reduceMotion ? 0 : -16),
+          }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}
+        >
+          <p
+            className="text-center text-base leading-tight font-bold text-black sm:text-lg"
+            style={{ fontFamily: 'Geist, sans-serif' }}
           >
-            <div className="flex items-stretch">
-              <div className="flex flex-1 items-center gap-0 overflow-hidden">
+            Что вы получите для
+            {' '}
+            <span
+              className="inline-block rounded-sm px-1"
+              style={{ background: 'rgba(194,0,0,0.12)', color: '#c20000' }}
+            >
+              защиты капитала
+            </span>
+            ?
+          </p>
+        </motion.div>
 
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`icon-${activeIndex}`}
-                    className="relative flex shrink-0 items-center justify-center self-stretch overflow-hidden"
-                    style={{
-                      width: '30px',
-                      background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)',
-                    }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.2 }}
-                  >
-                    <div
-                      className="pointer-events-none absolute inset-0"
-                      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)' }}
-                    />
-                    <ActiveIcon className="relative z-10 h-7 w-7 text-white" strokeWidth={1.75} />
-                  </motion.div>
-                </AnimatePresence>
+        {/* ── Карточка + телефон по центру ── */}
+        <div className="flex h-full flex-row items-center gap-3 px-0 [@media(max-width:400px)]:gap-2">
+          <div className="min-w-0 flex-1">
+            <div
+              className="overflow-hidden rounded-xl bg-white"
+              style={{ border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.09)' }}
+            >
+              <div className="flex items-stretch">
+                <div className="flex flex-1 items-center gap-0 overflow-hidden">
 
-                {/* ── aria-live region: announces step changes to screen readers ── */}
-                <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-0.5" aria-live="polite">
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={activeIndex}
-                      initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-                      transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeOut' }}
+                      key={`icon-${activeIndex}`}
+                      className="relative flex shrink-0 items-center justify-center self-stretch overflow-hidden"
+                      style={{ width: '30px', background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)' }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: reduceMotion ? 0 : 0.2 }}
                     >
-                      {items[activeIndex] && (
-                        <div>
-                          <div className="mb-4">
-                            <span
-                              className="inline-block rounded-md px-2.5 py-1 font-bold tracking-[0.13em] wrap-break-word text-white uppercase"
-                              style={{ background: '#c20000', fontFamily: 'Geist, sans-serif', fontSize: 'clamp(12px, 2vw, 24px)', overflowWrap: 'break-word', wordBreak: 'break-word' }}
-                            >
-                              {items[activeIndex].badge}
-                            </span>
-                          </div>
-                          <p
-                            className="text-base leading-snug text-black/65"
-                            style={{ fontFamily: 'Geist, sans-serif', fontWeight: 400 }}
-                          >
-                            {items[activeIndex].text}
-                          </p>
-                        </div>
-                      )}
+                      <div
+                        className="pointer-events-none absolute inset-0"
+                        style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)' }}
+                      />
+                      <ActiveIcon className="relative z-10 h-7 w-7 text-white" strokeWidth={1.75} />
                     </motion.div>
                   </AnimatePresence>
+
+                  <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-0.5" aria-live="polite">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeIndex}
+                        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeOut' }}
+                      >
+                        {items[activeIndex] && (
+                          <div>
+                            <div className="mb-4">
+                              <span
+                                className="inline-block rounded-md px-2.5 py-1 font-bold tracking-[0.13em] text-white uppercase"
+                                style={{ background: '#c20000', fontFamily: 'Geist, sans-serif', fontSize: 'clamp(12px, 2vw, 24px)', overflowWrap: 'break-word', wordBreak: 'break-word' }}
+                              >
+                                {items[activeIndex].badge}
+                              </span>
+                            </div>
+                            <p
+                              className="text-base leading-snug text-black/65"
+                              style={{ fontFamily: 'Geist, sans-serif', fontWeight: 400 }}
+                            >
+                              {items[activeIndex].text}
+                            </p>
+                          </div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <PhoneMockup activeIndex={activeIndex} size="mobile" />
         </div>
 
-        {/* ── Right side: phone mockup ── */}
-        <PhoneMockup activeIndex={activeIndex} size="mobile" />
+        <motion.div
+          className="absolute right-0 bottom-0 left-0 z-10 px-4 pb-4 sm:px-6"
+          initial={false}
+          animate={{
+            opacity: showChrome ? 1 : 0,
+            y: showChrome ? 0 : (reduceMotion ? 0 : 16),
+          }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}
+        >
+          <a
+            href="https://001k.exchange/your_bot"
+            className="relative mx-auto block max-w-2xl overflow-hidden rounded-xl px-6 py-4 text-center text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.99]"
+            style={{
+              background: '#c20000',
+              boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
+              fontFamily: 'Geist, sans-serif',
+            }}
+          >
+            <span
+              className="pointer-events-none absolute inset-0 opacity-[0.08]"
+              style={{ background: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)' }}
+            />
+            ПОЛУЧИТЬ ЧЕК-ЛИСТ БЕСПЛАТНО
+          </a>
+        </motion.div>
+
       </div>
     </div>
   );
