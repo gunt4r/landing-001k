@@ -267,7 +267,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
       <div className="sticky top-0 h-screen">
 
         <motion.div
-          className="absolute top-1/7 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
+          className="absolute top-1/10 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
           initial={false}
           animate={{
             opacity: showChrome ? 1 : 0,
