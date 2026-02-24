@@ -252,7 +252,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     <div ref={stickyContainerRef} style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}>
 
       {/* Sentinels */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         {Array.from({ length: PIN_COUNT }, (_, i) => (
           <div
             key={i}
@@ -264,10 +264,10 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         ))}
       </div>
 
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-screen">
 
         <motion.div
-          className="absolute top-1/10 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
+          className="absolute top-1/7 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
           initial={false}
           animate={{
             opacity: showChrome ? 1 : 0,
@@ -276,7 +276,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
           transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}
         >
           <p
-            className="text-center text-base leading-tight font-bold text-black sm:text-lg"
+            className="text-center text-2xl leading-tight font-bold text-black sm:text-3xl"
             style={{ fontFamily: 'Geist, sans-serif' }}
           >
             Что вы получите для
@@ -294,71 +294,114 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         {/* ── Карточка + телефон по центру ── */}
         <div className="flex h-full flex-row items-center gap-3 px-0 [@media(max-width:400px)]:gap-2">
           <div className="min-w-0 flex-1">
-            <div
-              className="overflow-hidden rounded-xl bg-white"
-              style={{ border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.09)' }}
-            >
-              <div className="flex items-stretch">
-                <div className="flex flex-1 items-center gap-0 overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
+                transition={{ duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' }}
+                className="relative overflow-hidden rounded-2xl bg-white"
+                style={{
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 2px 0 rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.08)',
+                }}
+                aria-live="polite"
+              >
+                {/* Красная акцентная полоса слева */}
+                <div
+                  className="absolute top-0 left-0 h-full w-[3px]"
+                  style={{ background: 'linear-gradient(180deg, #c20000 0%, #ff4444 50%, transparent 100%)' }}
+                />
 
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={`icon-${activeIndex}`}
-                      className="relative flex shrink-0 items-center justify-center self-stretch overflow-hidden"
-                      style={{ width: '30px', background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)' }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: reduceMotion ? 0 : 0.2 }}
-                    >
-                      <div
-                        className="pointer-events-none absolute inset-0"
-                        style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)' }}
-                      />
-                      <ActiveIcon className="relative z-10 h-7 w-7 text-white" strokeWidth={1.75} />
-                    </motion.div>
-                  </AnimatePresence>
+                <div className="px-5 py-5 pl-3">
+                  {/* Строка: номер + бейдж */}
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-black text-white"
+                        style={{
+                          background: 'linear-gradient(135deg, #c20000, #8a0000)',
+                          fontFamily: 'Geist, sans-serif',
+                          fontSize: '10px',
+                          boxShadow: '0 2px 8px rgba(194,0,0,0.35)',
+                          letterSpacing: '0.02em',
+                        }}
+                      >
+                        {String(activeIndex + 1).padStart(2, '0')}
+                      </span>
 
-                  <div className="flex-1 px-4 py-5 [@media(max-width:400px)]:px-0.5" aria-live="polite">
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={`badge-${activeIndex}`}
+                          className="inline-block rounded-md px-2 py-0.5 text-center font-extrabold tracking-[0.12em] uppercase"
+                          style={{
+                            background: 'rgba(194,0,0,0.08)',
+                            color: '#c20000',
+                            fontFamily: 'Geist, sans-serif',
+                            fontSize: 'clamp(7px, 1.8vw, 11px)',
+                            border: '1px solid rgba(194,0,0,0.15)',
+                          }}
+                          initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                        >
+                          {items[activeIndex]?.badge}
+                        </motion.span>
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Иконка в кружке */}
                     <AnimatePresence mode="wait">
                       <motion.div
-                        key={activeIndex}
-                        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-                        transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeOut' }}
+                        key={`icon-${activeIndex}`}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                        style={{
+                          background: 'linear-gradient(135deg, #fff0f0, #ffe0e0)',
+                          border: '1px solid rgba(194,0,0,0.12)',
+                          boxShadow: '0 2px 8px rgba(194,0,0,0.1)',
+                        }}
+                        initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.22, ease: 'backOut' }}
                       >
-                        {items[activeIndex] && (
-                          <div>
-                            <div className="mb-4">
-                              <span
-                                className="inline-block rounded-md px-2.5 py-1 font-bold tracking-[0.13em] text-white uppercase"
-                                style={{ background: '#c20000', fontFamily: 'Geist, sans-serif', fontSize: 'clamp(12px, 2vw, 24px)', overflowWrap: 'break-word', wordBreak: 'break-word' }}
-                              >
-                                {items[activeIndex].badge}
-                              </span>
-                            </div>
-                            <p
-                              className="text-base leading-snug text-black/65"
-                              style={{ fontFamily: 'Geist, sans-serif', fontWeight: 400 }}
-                            >
-                              {items[activeIndex].text}
-                            </p>
-                          </div>
-                        )}
+                        <ActiveIcon
+                          style={{ width: '16px', height: '16px', color: '#c20000' }}
+                          strokeWidth={2.25}
+                        />
                       </motion.div>
                     </AnimatePresence>
                   </div>
+
+                  {/* Тонкий разделитель */}
+                  <div
+                    className="mb-3 h-px"
+                    style={{ background: 'linear-gradient(90deg, rgba(194,0,0,0.12) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}
+                  />
+
+                  {/* Текст */}
+                  <p
+                    className="leading-snug text-black/60"
+                    style={{
+                      fontFamily: 'Geist, sans-serif',
+                      fontWeight: 400,
+                      fontSize: 'clamp(12px, 3vw, 14px)',
+                    }}
+                  >
+                    {items[activeIndex]?.text}
+                  </p>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <PhoneMockup activeIndex={activeIndex} size="mobile" />
         </div>
 
         <motion.div
-          className="absolute right-0 bottom-0 left-0 z-10 px-4 pb-4 sm:px-6"
+          className="absolute right-0 bottom-1/12 left-0 z-10 px-4 pb-4 sm:px-6"
           initial={false}
           animate={{
             opacity: showChrome ? 1 : 0,
@@ -368,7 +411,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         >
           <a
             href="https://001k.exchange/your_bot"
-            className="relative mx-auto block max-w-2xl overflow-hidden rounded-xl px-6 py-4 text-center text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.99]"
+            className="relative mx-auto block max-w-2xl rounded-xl px-6 py-4 text-center text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.99]"
             style={{
               background: '#c20000',
               boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
@@ -403,11 +446,11 @@ function DesktopSection({ reduceMotion }: { isDesktop: boolean; reduceMotion: bo
               transition={{ duration: 0.45, delay: i * 0.07, ease: 'easeOut' }}
             >
               <div
-                className="group flex items-stretch overflow-hidden rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.07)] transition-shadow duration-200 hover:shadow-[0_6px_24px_rgba(194,0,0,0.11)]"
+                className="group flex items-stretch rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.07)] transition-shadow duration-200 hover:shadow-[0_6px_24px_rgba(194,0,0,0.11)]"
                 style={{ border: '1px solid rgba(0,0,0,0.07)' }}
               >
                 <div
-                  className="relative flex w-[68px] shrink-0 items-center justify-center overflow-hidden lg:w-[76px]"
+                  className="relative flex w-[68px] shrink-0 items-center justify-center lg:w-[76px]"
                   style={{ background: 'linear-gradient(150deg, #c20000 0%, #7d0000 100%)' }}
                 >
                   <div
@@ -581,7 +624,7 @@ export function PhoneMockupSection() {
         >
           <a
             href="https://001k.exchange/your_bot"
-            className="relative inline-block w-full max-w-2xl overflow-hidden rounded-xl px-6 py-4 text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 hover:shadow-2xl active:scale-[0.99] sm:px-8 sm:py-5 sm:text-base md:text-lg md:tracking-[0.16em]"
+            className="relative inline-block w-full max-w-2xl rounded-xl px-6 py-4 text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 hover:shadow-2xl active:scale-[0.99] sm:px-8 sm:py-5 sm:text-base md:text-lg md:tracking-[0.16em]"
             style={{ background: '#c20000', boxShadow: '0 8px 40px rgba(194,0,0,0.38)', fontFamily: 'Geist, sans-serif' }}
           >
             <span className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ background: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)' }} />

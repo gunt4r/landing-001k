@@ -129,7 +129,7 @@ export function AuthorBlock() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 items-center">
+        <div className="relative z-10 grid grid-cols-1 items-center">
 
           <motion.div
             className="relative order-2 lg:order-1"
@@ -146,7 +146,7 @@ export function AuthorBlock() {
               (
             </div>
 
-            <div className="relative ml-auto aspect-3/4 max-w-md overflow-hidden lg:mx-auto">
+            <div className="relative ml-auto aspect-3/4 max-w-md lg:mx-auto">
 
               <div
                 className="absolute top-6 left-[2%] z-20 text-sm font-light tracking-[0.25em] text-white sm:left-6 sm:text-xs"
@@ -239,7 +239,7 @@ export function AuthorBlock() {
                 transition={{ duration: 0.6, delay: index * 0.12 }}
               >
                 <div
-                  className="relative flex items-center gap-2 overflow-hidden p-1 sm:gap-5 sm:p-6 md:p-8"
+                  className="relative flex items-center gap-2 p-1 sm:gap-5 sm:p-6 md:p-8"
                   style={{
                     transform: 'translateZ(0)',
                     backfaceVisibility: 'hidden',
