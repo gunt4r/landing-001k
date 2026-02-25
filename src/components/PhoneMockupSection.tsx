@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
@@ -40,7 +39,13 @@ const items = [
   },
 ];
 
-function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; size?: 'mobile' | 'desktop' }) {
+function PhoneMockup({
+  activeIndex,
+  size = 'desktop',
+}: {
+  activeIndex: number;
+  size?: 'mobile' | 'desktop';
+}) {
   const isMobile = size === 'mobile';
   return (
     <div
@@ -59,7 +64,9 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
         className="relative overflow-hidden bg-black"
         style={{
           borderRadius: isMobile ? 'clamp(16px, 5vw, 32px)' : 'clamp(18px, 4vw, 44px)',
-          border: isMobile ? 'clamp(4px, 1vw, 8px) solid black' : 'clamp(5px, 1.2vw, 12px) solid black',
+          border: isMobile
+            ? 'clamp(4px, 1vw, 8px) solid black'
+            : 'clamp(5px, 1.2vw, 12px) solid black',
           boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
         }}
       >
@@ -70,7 +77,6 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
           }}
         >
           <div className="flex h-full w-full flex-col items-center justify-center p-[9%] text-center">
-
             <div
               className="mx-auto mb-[5%] flex items-center justify-center rounded-2xl"
               style={{
@@ -113,7 +119,11 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
 
             <div
               className="mb-[7%] w-full"
-              style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 'min(8px, 1.6vw)' : 'clamp(4px, 1vw, 10px)' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: isMobile ? 'min(8px, 1.6vw)' : 'clamp(4px, 1vw, 10px)',
+              }}
             >
               {items.map((item, i) => {
                 const ItemIcon = item.icon;
@@ -122,7 +132,11 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
                   <div
                     key={i}
                     className="flex items-center text-left"
-                    style={{ gap: '8%', opacity: isActive ? 1 : 0.35, transition: 'opacity 0.35s ease' }}
+                    style={{
+                      gap: '8%',
+                      opacity: isActive ? 1 : 0.35,
+                      transition: 'opacity 0.35s ease',
+                    }}
                   >
                     <div
                       className="flex shrink-0 items-center justify-center rounded-sm"
@@ -174,7 +188,9 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
                 fontWeight: 700,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                padding: isMobile ? 'min(9px, 1.8vw) min(12px, 2.4vw)' : 'clamp(5px, 1.1vw, 12px) clamp(6px, 1.5vw, 16px)',
+                padding: isMobile
+                  ? 'min(9px, 1.8vw) min(12px, 2.4vw)'
+                  : 'clamp(5px, 1.1vw, 12px) clamp(6px, 1.5vw, 16px)',
                 textAlign: 'center',
               }}
             >
@@ -202,6 +218,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
   const sentinelRef = useRef<(HTMLDivElement | null)[]>([]);
   const stickyContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // IntersectionObserver для sentinel-ов
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     sentinelRef.current.forEach((el, i) => {
@@ -222,6 +239,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
+  // Клавиатурная навигация
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (!stickyContainerRef.current) {
@@ -243,14 +261,14 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [reduceMotion]);
 
-  const ActiveIcon = items[activeIndex]?.icon as any;
-
-  const showChrome = activeIndex > 0 && activeIndex < PIN_COUNT - 1;
+  const ActiveIcon = items[activeIndex]?.icon as React.ElementType;
 
   return (
-    <div ref={stickyContainerRef} style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}>
-
-      {/* Sentinels */}
+    <div
+      ref={stickyContainerRef}
+      style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}
+    >
+      {/* Невидимые sentinel-ы — занимают всю высоту контейнера */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         {Array.from({ length: PIN_COUNT }, (_, i) => (
           <div
@@ -264,190 +282,159 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
       </div>
 
       <div className="sticky top-0 h-screen">
-
         <motion.div
-          className="absolute top-1/10 right-0 left-0 z-10 px-4 pt-3 sm:px-6"
-          initial={false}
-          animate={{
-            opacity: showChrome ? 1 : 0,
-            y: showChrome ? 0 : (reduceMotion ? 0 : -16),
-          }}
-          transition={{ duration: reduceMotion ? 0 : 0.15, ease: easeOut }}
+          className="flex h-full flex-col justify-between px-4 py-6 pt-[35%] sm:px-6"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.55, ease: easeOut }}
         >
-          <p
-            className="text-center text-2xl leading-tight font-bold text-black sm:text-3xl"
-            style={{ fontFamily: 'Geist, sans-serif' }}
-          >
-            Что вы получите для
-            {' '}
-            <span
-              className="inline-block rounded-sm px-1"
-              style={{ background: 'rgba(194,0,0,0.12)', color: '#c20000' }}
+          <div className="shrink-0 pt-1 pb-3 text-center">
+            <p
+              className="text-3xl leading-tight font-bold text-black sm:text-3xl"
+              style={{ fontFamily: 'Geist, sans-serif' }}
             >
-              защиты капитала
-            </span>
-            ?
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="absolute flex w-full flex-row gap-3 px-0 [@media(max-width:400px)]:gap-2"
-          initial={false}
-          animate={
-            activeIndex === 0
-              ? {
-                  top: 'clamp(80px, 10vh, 160px)',
-                  alignItems: 'flex-start',
-                  height: '100%',
-                  paddingTop: '20px',
-                  paddingBottom: '60px',
-                  scale: 1,
-                  opacity: 1,
-                }
-              : {
-                  top: '0px',
-                  alignItems: showChrome ? 'center' : 'flex-end',
-                  height: '100%',
-                  scale: activeIndex === PIN_COUNT - 1 ? 0.98 : 1,
-                  opacity: 1,
-                }
-          }
-          transition={
-            activeIndex === 0
-              ? {
-                  duration: reduceMotion ? 0 : 0.45,
-                  ease: easeInOut,
-                  delay: reduceMotion ? 0 : 0.25,
-                  top: { duration: reduceMotion ? 0 : 0.45 },
-                  alignItems: { duration: reduceMotion ? 0 : 0.35, delay: reduceMotion ? 0 : 0.1 },
-                  paddingTop: { duration: reduceMotion ? 0 : 0.45 },
-                  paddingBottom: { duration: reduceMotion ? 0 : 0.45 },
-                  scale: { duration: reduceMotion ? 0 : 0.35, ease: easeOut },
-                }
-              : {
-                  duration: reduceMotion ? 0 : 0.45,
-                  ease: easeInOut,
-                  delay: 0.15,
-                  top: { duration: reduceMotion ? 0 : 0.4, delay: 0.15 },
-                  alignItems: { duration: reduceMotion ? 0 : 0.35, delay: reduceMotion ? 0 : 0.2 },
-                  scale: { duration: reduceMotion ? 0 : 0.3, ease: easeOut, delay: 0.1 },
-                }
-          }
-        >
-          <div className="min-w-0 flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
-                transition={{ duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' }}
-                className="relative overflow-hidden rounded-2xl bg-white"
-                style={{
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 2px 0 rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.08)',
-                }}
-                aria-live="polite"
+              Что вы получите для
+              {' '}
+              <span
+                className="inline-block rounded-sm px-1"
+                style={{ color: '#c20000' }}
               >
-                {/* Красная акцентная полоса слева */}
-                <div
-                  className="absolute top-0 left-0 h-full w-[3px]"
-                  style={{ background: 'linear-gradient(180deg, #c20000 0%, #ff4444 50%, transparent 100%)' }}
-                />
-
-                <div className="py-5 pr-2 pl-2">
-                  <div className="mb-3 flex items-center justify-center gap-1">
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={`badge-${activeIndex}`}
-                        className="inline-block px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
-                        style={{
-                          color: '#c20000',
-                          fontFamily: 'Geist, sans-serif',
-                          fontSize: 'clamp(9px, 1.8vw, 11px)',
-                        }}
-                        initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: reduceMotion ? 0 : 0.2 }}
-                      >
-                        {items[activeIndex]?.badge}
-                      </motion.span>
-                    </AnimatePresence>
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`icon-${activeIndex}`}
-                        className="flex h-8 w-8  items-center justify-center"
-                        initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
-                        transition={{ duration: reduceMotion ? 0 : 0.22, ease: 'backOut' }}
-                      >
-                        <ActiveIcon
-                          style={{ width: '12px', height: '12px', color: '#c20000' }}
-                          strokeWidth={2.25}
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Тонкий разделитель */}
-                  <div
-                    className="mb-3 h-0.5"
-                    style={{ background: 'linear-gradient(90deg, rgba(194,0,0,0.12) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}
-                  />
-
-                  {/* Текст */}
-                  <p
-                    className="leading-snug text-black/60"
-                    style={{
-                      fontFamily: 'Geist, sans-serif',
-                      fontWeight: 400,
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                    }}
-                  >
-                    {items[activeIndex]?.text}
-                  </p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                защиты капитала
+              </span>
+              ?
+            </p>
           </div>
 
-          <PhoneMockup activeIndex={activeIndex} size="mobile" />
-        </motion.div>
+          {/* ── CARD + PHONE ── */}
+          <div className="flex min-h-0 flex-1 flex-row items-center gap-3 [@media(max-width:400px)]:gap-2">
+            {/* Карточка — анимируется только её содержимое */}
+            <div className="flex min-w-0 flex-1 items-center self-stretch">
+              <div className="w-full">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: reduceMotion ? 0 : -12 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeOut' }}
+                    className="relative rounded-2xl bg-white"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.07)',
+                      boxShadow:
+                        '0 2px 0 rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.08)',
+                    }}
+                    aria-live="polite"
+                  >
+                    {/* Красная полоса слева */}
+                    <div
+                      className="absolute top-0 left-0 h-full w-[3px]"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, #c20000 0%, #ff4444 50%, transparent 100%)',
+                      }}
+                    />
 
-        <motion.div
-          className="absolute right-0 bottom-1/12 left-0 z-10 px-4 pb-4 sm:px-6"
-          initial={false}
-          animate={{
-            opacity: showChrome ? 1 : 0,
-            y: showChrome ? 0 : (reduceMotion ? 0 : 16),
-          }}
-          transition={{ duration: reduceMotion ? 0 : 0.15, ease: easeOut }}
-        >
-          <a
-            href="https://001k.exchange/your_bot"
-            className="relative mx-auto block max-w-2xl rounded-xl px-6 py-4 text-center text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.99]"
-            style={{
-              background: '#c20000',
-              boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
-              fontFamily: 'Geist, sans-serif',
-            }}
-          >
-            <span
-              className="pointer-events-none absolute inset-0 opacity-[0.08]"
-              style={{ background: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)' }}
-            />
-            ПОЛУЧИТЬ ЧЕК-ЛИСТ БЕСПЛАТНО
-          </a>
-        </motion.div>
+                    <div className="py-5 pr-2 pl-3">
+                      {/* Badge + Icon */}
+                      <div className="mb-3 flex items-center justify-center gap-1">
+                        <AnimatePresence mode="wait">
+                          <motion.span
+                            key={`badge-${activeIndex}`}
+                            className="inline-block px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
+                            style={{
+                              color: '#c20000',
+                              fontFamily: 'Geist, sans-serif',
+                              fontSize: 'clamp(9px, 1.8vw, 11px)',
+                            }}
+                            initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                          >
+                            {items[activeIndex]?.badge}
+                          </motion.span>
+                        </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={`icon-${activeIndex}`}
+                            className="flex h-8 w-8 items-center justify-center"
+                            initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.2, ease: 'backOut' }}
+                          >
+                            <ActiveIcon
+                              style={{ width: '12px', height: '12px', color: '#c20000' }}
+                              strokeWidth={2.25}
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
 
+                      {/* Разделитель */}
+                      <div
+                        className="mb-3 h-0.5"
+                        style={{
+                          background:
+                            'linear-gradient(90deg, rgba(194,0,0,0.12) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)',
+                        }}
+                      />
+
+                      {/* Текст */}
+                      <p
+                        className="leading-snug text-black/60"
+                        style={{
+                          fontFamily: 'Geist, sans-serif',
+                          fontWeight: 400,
+                          fontSize: 'clamp(12px, 3vw, 14px)',
+                        }}
+                      >
+                        {items[activeIndex]?.text}
+                      </p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Телефон */}
+            <PhoneMockup activeIndex={activeIndex} size="mobile" />
+          </div>
+
+          {/* ── CTA ── */}
+          <div className="shrink-0 pt-3 pb-1">
+            <a
+              href="https://001k.exchange/your_bot"
+              className="relative mx-auto block max-w-2xl rounded-xl px-6 py-4 text-center text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.99]"
+              style={{
+                background: '#c20000',
+                boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
+                fontFamily: 'Geist, sans-serif',
+              }}
+            >
+              <span
+                className="pointer-events-none absolute inset-0 opacity-[0.08]"
+                style={{
+                  background:
+                    'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)',
+                }}
+              />
+              ПОЛУЧИТЬ ЧЕК-ЛИСТ БЕСПЛАТНО
+            </a>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
 }
 
-function DesktopSection({ reduceMotion }: { isDesktop: boolean; reduceMotion: boolean }) {
+function DesktopSection({
+  reduceMotion,
+}: {
+  isDesktop: boolean;
+  reduceMotion: boolean;
+}) {
   return (
     <div className="flex flex-row items-center gap-14">
       <div className="min-w-0 flex-1 space-y-3">
@@ -471,9 +458,15 @@ function DesktopSection({ reduceMotion }: { isDesktop: boolean; reduceMotion: bo
                 >
                   <div
                     className="pointer-events-none absolute inset-0"
-                    style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)' }}
+                    style={{
+                      background:
+                        'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)',
+                    }}
                   />
-                  <Icon className="relative z-10 h-7 w-7 text-white drop-shadow-sm" strokeWidth={1.75} />
+                  <Icon
+                    className="relative z-10 h-7 w-7 text-white drop-shadow-sm"
+                    strokeWidth={1.75}
+                  />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4">
                   <div className="mb-1.5">
@@ -546,7 +539,6 @@ export function PhoneMockupSection() {
       const r3 = rand(i * 3 + 3);
       return {
         id: i,
-        size: 3,
         top: 20 + r1 * 60,
         left: 20 + r2 * 60,
         duration: 18 + r3 * 8,
@@ -558,9 +550,13 @@ export function PhoneMockupSection() {
   }, [reduceMotion, isDesktop]);
 
   return (
-    <section className="relative bg-white py-16 md:py-24">
-
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0" style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}>
+    <section className="relative bg-white pb-16 md:py-24">
+      {/* Фоновые декорации */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+      >
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -569,7 +565,10 @@ export function PhoneMockupSection() {
         />
         <motion.div
           className="absolute top-[20%] left-[15%] h-96 w-96"
-          style={{ background: 'radial-gradient(circle, rgba(194,0,0,0.8) 0%, transparent 70%)', filter: 'blur(80px)' }}
+          style={{
+            background: 'radial-gradient(circle, rgba(194,0,0,0.8) 0%, transparent 70%)',
+            filter: 'blur(80px)',
+          }}
           animate={!reduceMotion ? { opacity: [0.3, 0.65, 0.3] } : { opacity: 0.4 }}
           transition={{ duration: 20, repeat: Infinity, ease: easeInOut }}
         />
@@ -579,8 +578,8 @@ export function PhoneMockupSection() {
             className="absolute block rounded-full"
             style={{
               background: 'rgba(194,0,0,0.8)',
-              width: `10px`,
-              height: `10px`,
+              width: '10px',
+              height: '10px',
               top: `${p.top}%`,
               left: `${p.left}%`,
               willChange: 'transform, opacity',
@@ -590,16 +589,27 @@ export function PhoneMockupSection() {
             }}
             initial={{ opacity: 0.6 }}
             animate={{ y: [0, -p.yOffset, 0], x: [0, p.xOffset, 0], opacity: [0, 0.5, 0] }}
-            transition={{ duration: p.duration, repeat: Infinity, ease: easeInOut, delay: p.delay }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              ease: easeInOut,
+              delay: p.delay,
+            }}
           />
         ))}
       </div>
 
       <div className="relative z-10 container mx-auto max-w-7xl px-4 sm:px-6">
 
-        <div className="text-center">
+        {/*
+          ДЕСКТОП: заголовок + список карточек + телефон + CTA — всё здесь.
+          МОБАЙЛ: заголовок и CTA из этого блока убраны — они живут внутри MobileSection.
+        */}
+
+        {/* Заголовок — только для десктопа */}
+        <div className="hidden text-center lg:block">
           <motion.h2
-            className="mt-2 text-2xl leading-tight font-bold text-black sm:text-3xl md:text-4xl lg:text-5xl"
+            className="mt-2 text-4xl leading-tight font-bold text-black lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif' }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -611,7 +621,7 @@ export function PhoneMockupSection() {
             <span className="relative inline-block">
               <span className="relative z-10">защиты капитала</span>
               <motion.span
-                className="absolute bottom-0 left-0 h-3 w-full md:h-4"
+                className="absolute bottom-0 left-0 h-3 w-full lg:h-4"
                 style={{ background: 'rgba(194,0,0,0.15)', transformOrigin: 'left' }}
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
@@ -623,16 +633,19 @@ export function PhoneMockupSection() {
           </motion.h2>
         </div>
 
+        {/* Мобайл секция — содержит свой header + card/phone + CTA */}
         <div className="lg:hidden">
           <MobileSection reduceMotion={reduceMotion} />
         </div>
 
+        {/* Десктоп секция */}
         <div className="relative mx-auto hidden max-w-6xl lg:block">
           <DesktopSection isDesktop={isDesktop} reduceMotion={reduceMotion} />
         </div>
 
+        {/* CTA — только для десктопа */}
         <motion.div
-          className="mt-10 text-center md:mt-14"
+          className="mt-14 hidden text-center lg:block"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-30px' }}
@@ -640,10 +653,20 @@ export function PhoneMockupSection() {
         >
           <a
             href="https://001k.exchange/your_bot"
-            className="relative inline-block w-full max-w-2xl rounded-xl px-6 py-4 text-sm font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 hover:shadow-2xl active:scale-[0.99] sm:px-8 sm:py-5 sm:text-base md:text-lg md:tracking-[0.16em]"
-            style={{ background: '#c20000', boxShadow: '0 8px 40px rgba(194,0,0,0.38)', fontFamily: 'Geist, sans-serif' }}
+            className="relative inline-block w-full max-w-2xl rounded-xl px-8 py-5 text-base font-extrabold tracking-[0.14em] text-white uppercase transition-all duration-200 hover:opacity-90 hover:shadow-2xl active:scale-[0.99] lg:text-lg lg:tracking-[0.16em]"
+            style={{
+              background: '#c20000',
+              boxShadow: '0 8px 40px rgba(194,0,0,0.38)',
+              fontFamily: 'Geist, sans-serif',
+            }}
           >
-            <span className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ background: 'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)' }} />
+            <span
+              className="pointer-events-none absolute inset-0 opacity-[0.08]"
+              style={{
+                background:
+                  'linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.8) 50%, transparent 62%)',
+              }}
+            />
             ПОЛУЧИТЬ ЧЕК-ЛИСТ БЕСПЛАТНО
           </a>
         </motion.div>
