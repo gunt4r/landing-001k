@@ -4,7 +4,7 @@
 'use client';
 
 import { Ban, CheckCircle, Search, SendHorizontal, Shield } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, easeInOut, easeOut, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 function rand(seed: number) {
@@ -273,7 +273,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
             opacity: showChrome ? 1 : 0,
             y: showChrome ? 0 : (reduceMotion ? 0 : -16),
           }}
-          transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}
+          transition={{ duration: reduceMotion ? 0 : 0.15, ease: easeOut }}
         >
           <p
             className="text-center text-2xl leading-tight font-bold text-black sm:text-3xl"
@@ -291,8 +291,38 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
           </p>
         </motion.div>
 
-        {/* ── Карточка + телефон по центру ── */}
-        <div className="flex h-full flex-row items-center gap-3 px-0 [@media(max-width:400px)]:gap-2">
+        <motion.div
+          className="absolute flex w-full flex-row gap-3 px-0 [@media(max-width:400px)]:gap-2"
+          initial={false}
+          animate={
+            activeIndex === 0
+              ? {
+                  top: 'clamp(80px, 10vh, 160px)',
+                  alignItems: 'flex-start',
+                  height: '100%',
+                  paddingTop: '20px',
+                  paddingBottom: '60px',
+                }
+              : {
+                  top: '0px',
+                  alignItems: showChrome ? 'center' : 'flex-end',
+                  height: '100%',
+                }
+          }
+          transition={
+            activeIndex === 0
+              ? {
+                  duration: reduceMotion ? 0 : 0.45,
+                  ease: easeInOut,
+                  delay: reduceMotion ? 0 : 0.25,
+                }
+              : {
+                  duration: reduceMotion ? 0 : 0.45,
+                  ease: easeInOut,
+                  delay: 0.15,
+                }
+          }
+        >
           <div className="min-w-0 flex-1">
             <AnimatePresence mode="wait">
               <motion.div
@@ -315,30 +345,17 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                 />
 
                 <div className="py-5 pr-2 pl-2">
-                  <div className="mb-3 flex items-center justify-between gap-1">
-                    <span
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-black text-white"
-                      style={{
-                        background: 'linear-gradient(135deg, #c20000, #8a0000)',
-                        fontFamily: 'Geist, sans-serif',
-                        fontSize: '10px',
-                        boxShadow: '0 2px 8px rgba(194,0,0,0.35)',
-                        letterSpacing: '0.02em',
-                      }}
-                    >
-                      {String(activeIndex + 1).padStart(2, '0')}
-                    </span>
-
+                  <div className="mb-3 flex items-center justify-center gap-1">
                     <AnimatePresence mode="wait">
                       <motion.span
                         key={`badge-${activeIndex}`}
-                        className="inline-block rounded-md px-2 py-0.5 text-center font-extrabold tracking-[0.12em] uppercase"
+                        className="inline-block rounded-md px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
                         style={{
                           background: 'rgba(194,0,0,0.08)',
                           color: '#c20000',
                           fontFamily: 'Geist, sans-serif',
-                          fontSize: 'clamp(7px, 1.8vw, 11px)',
-                          border: '1px solid rgba(194,0,0,0.15)',
+                          fontSize: 'clamp(8px, 1.8vw, 11px)',
+                          boxShadow: '0 2px 8px rgba(194,0,0,0.1)',
                         }}
                         initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -354,7 +371,6 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                         className="flex h-7.5 w-7.5  items-center justify-center rounded-lg"
                         style={{
                           background: 'linear-gradient(135deg, #fff0f0, #ffe0e0)',
-                          border: '1px solid rgba(194,0,0,0.12)',
                           boxShadow: '0 2px 8px rgba(194,0,0,0.1)',
                         }}
                         initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
@@ -393,7 +409,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
           </div>
 
           <PhoneMockup activeIndex={activeIndex} size="mobile" />
-        </div>
+        </motion.div>
 
         <motion.div
           className="absolute right-0 bottom-1/12 left-0 z-10 px-4 pb-4 sm:px-6"
@@ -402,7 +418,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
             opacity: showChrome ? 1 : 0,
             y: showChrome ? 0 : (reduceMotion ? 0 : 16),
           }}
-          transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}
+          transition={{ duration: reduceMotion ? 0 : 0.15, ease: easeOut }}
         >
           <a
             href="https://001k.exchange/your_bot"
@@ -438,7 +454,7 @@ function DesktopSection({ reduceMotion }: { isDesktop: boolean; reduceMotion: bo
               initial={{ opacity: 0, x: !reduceMotion ? -16 : 0 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.45, delay: i * 0.07, ease: 'easeOut' }}
+              transition={{ duration: 0.45, delay: i * 0.07, ease: easeOut }}
             >
               <div
                 className="group flex items-stretch rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.07)] transition-shadow duration-200 hover:shadow-[0_6px_24px_rgba(194,0,0,0.11)]"
@@ -484,7 +500,7 @@ function DesktopSection({ reduceMotion }: { isDesktop: boolean; reduceMotion: bo
         initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
+        transition={{ duration: 0.65, delay: 0.1, ease: easeOut }}
       >
         <PhoneMockup activeIndex={items.length - 1} size="desktop" />
       </motion.div>
@@ -550,7 +566,7 @@ export function PhoneMockupSection() {
           className="absolute top-[20%] left-[15%] h-96 w-96"
           style={{ background: 'radial-gradient(circle, rgba(194,0,0,0.8) 0%, transparent 70%)', filter: 'blur(80px)' }}
           animate={!reduceMotion ? { opacity: [0.3, 0.65, 0.3] } : { opacity: 0.4 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 20, repeat: Infinity, ease: easeInOut }}
         />
         {floatingParticles.map(p => (
           <motion.div
@@ -569,21 +585,21 @@ export function PhoneMockupSection() {
             }}
             initial={{ opacity: 0.6 }}
             animate={{ y: [0, -p.yOffset, 0], x: [0, p.xOffset, 0], opacity: [0, 0.5, 0] }}
-            transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
+            transition={{ duration: p.duration, repeat: Infinity, ease: easeInOut, delay: p.delay }}
           />
         ))}
       </div>
 
       <div className="relative z-10 container mx-auto max-w-7xl px-4 sm:px-6">
 
-        <div className="mb-10 text-center md:mb-16">
+        <div className="text-center">
           <motion.h2
             className="mt-2 text-2xl leading-tight font-bold text-black sm:text-3xl md:text-4xl lg:text-5xl"
             style={{ fontFamily: 'Geist, sans-serif' }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, ease: 'easeOut' }}
+            transition={{ duration: 0.65, ease: easeOut }}
           >
             Что вы получите для
             {' '}
@@ -595,7 +611,7 @@ export function PhoneMockupSection() {
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.65, delay: 0.35, ease: 'easeOut' }}
+                transition={{ duration: 0.65, delay: 0.35, ease: easeOut }}
               />
             </span>
             ?
@@ -615,7 +631,7 @@ export function PhoneMockupSection() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-30px' }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+          transition={{ duration: 0.5, ease: easeOut }}
         >
           <a
             href="https://001k.exchange/your_bot"

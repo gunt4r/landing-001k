@@ -2,16 +2,8 @@
 
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
 
 export function FomoSection() {
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    const r = requestAnimationFrame(() => setIsReady(true));
-    return () => cancelAnimationFrame(r);
-  }, []);
-
   return (
     <section className="relative overflow-hidden px-6 py-32 md:px-12 md:py-40 lg:px-24">
 
@@ -30,7 +22,7 @@ export function FomoSection() {
           className="mb-12 text-3xl leading-tight text-black md:text-4xl lg:text-5xl"
           style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
           initial={{ opacity: 0, y: 20 }}
-          animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           Ты можешь продолжать играть в финансовую рулетку или разобраться
@@ -40,7 +32,7 @@ export function FomoSection() {
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
         >
           <a
