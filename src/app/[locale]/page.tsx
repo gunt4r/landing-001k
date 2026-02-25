@@ -1,4 +1,5 @@
 import { AuthorBlock } from '@/components/authorBlock';
+import { Background3D } from '@/components/background';
 import { FomoSection } from '@/components/fomo';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
@@ -21,6 +22,7 @@ export default function App() {
         zoom: '90%',
       }}
     >
+      <Background3D />
       <Header />
 
       <main className="relative z-10">

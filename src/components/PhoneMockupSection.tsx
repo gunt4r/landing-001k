@@ -49,7 +49,7 @@ function PhoneMockup({
   const isMobile = size === 'mobile';
   return (
     <div
-      className="relative shrink-0"
+      className={`relative shrink-0 ${isMobile ? '[@media(min-width:450px)]:w-[min(140px,38vw)]!' : ''}`}
       style={{ width: isMobile ? 'min(326px, 47vw)' : 'clamp(200px, 26vw, 310px)' }}
     >
       <div
@@ -268,7 +268,6 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
       ref={stickyContainerRef}
       style={{ height: `${PIN_COUNT * 100}vh`, position: 'relative' }}
     >
-      {/* Невидимые sentinel-ы — занимают всю высоту контейнера */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         {Array.from({ length: PIN_COUNT }, (_, i) => (
           <div
@@ -333,7 +332,6 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     }}
                     aria-live="polite"
                   >
-                    {/* Красная полоса слева */}
                     <div
                       className="absolute top-0 left-0 h-full w-[3px]"
                       style={{
@@ -343,7 +341,6 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     />
 
                     <div className="py-5 pr-2 pl-3">
-                      {/* Badge + Icon */}
                       <div className="mb-3 flex items-center justify-center gap-1">
                         <AnimatePresence mode="wait">
                           <motion.div
@@ -363,7 +360,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                         <AnimatePresence mode="wait">
                           <motion.span
                             key={`badge-${activeIndex}`}
-                            className="inline-block px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
+                            className="inline-block px-2 py-1.5 text-left font-extrabold tracking-[0.12em] uppercase"
                             style={{
                               color: '#c20000',
                               fontFamily: 'Geist, sans-serif',
@@ -556,7 +553,7 @@ export function PhoneMockupSection() {
   }, [reduceMotion, isDesktop]);
 
   return (
-    <section className="relative bg-white pb-16 md:py-24">
+    <section className="relative pb-16 md:py-24">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0"
