@@ -360,13 +360,11 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     <AnimatePresence mode="wait">
                       <motion.span
                         key={`badge-${activeIndex}`}
-                        className="inline-block rounded-md px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
+                        className="inline-block px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
                         style={{
-                          background: 'rgba(194,0,0,0.08)',
                           color: '#c20000',
                           fontFamily: 'Geist, sans-serif',
-                          fontSize: 'clamp(8px, 1.8vw, 11px)',
-                          boxShadow: '0 2px 8px rgba(194,0,0,0.1)',
+                          fontSize: 'clamp(9px, 1.8vw, 11px)',
                         }}
                         initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -379,11 +377,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`icon-${activeIndex}`}
-                        className="flex h-7.5 w-7.5  items-center justify-center rounded-lg"
-                        style={{
-                          background: 'linear-gradient(135deg, #fff0f0, #ffe0e0)',
-                          boxShadow: '0 2px 8px rgba(194,0,0,0.1)',
-                        }}
+                        className="flex h-8 w-8  items-center justify-center"
                         initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
@@ -399,7 +393,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
 
                   {/* Тонкий разделитель */}
                   <div
-                    className="mb-3 h-px"
+                    className="mb-3 h-0.5"
                     style={{ background: 'linear-gradient(90deg, rgba(194,0,0,0.12) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}
                   />
 

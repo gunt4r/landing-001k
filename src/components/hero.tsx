@@ -70,7 +70,7 @@ export function HeroSection() {
 
   return (
     <section
-      className={`relative flex min-h-screen ${isMobile ? 'pt-[35%]' : 'items-center'} overflow-hidden bg-black`}
+      className={`relative flex max-h-[85vh] min-h-screen ${isMobile ? 'pt-[35%]' : 'items-center'} overflow-hidden bg-black`}
     >
       <div
         className="absolute inset-0"
