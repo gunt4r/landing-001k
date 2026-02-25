@@ -333,10 +333,10 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                     aria-live="polite"
                   >
                     <div
-                      className="absolute top-0 left-0 h-full w-[3px]"
+                      className="absolute top-[6px] left-0 h-full w-[3px] rounded-tl-[171px]"
                       style={{
                         background:
-                          'linear-gradient(180deg, #c20000 0%, #ff4444 50%, transparent 100%)',
+                          'linear-gradient(180deg, #c20000 0%, #ff4444 0, transparent 100%)',
                       }}
                     />
 
@@ -488,7 +488,7 @@ function DesktopSection({
                   </p>
                 </div>
                 <div
-                  className="w-[3px] shrink-0 self-stretch opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                  className="w-[3px] shrink-0 self-stretch rounded-tl-[26px] rounded-tr-[102px] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                   style={{ background: 'linear-gradient(180deg, #c20000, transparent)' }}
                 />
               </div>

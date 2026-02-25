@@ -1,12 +1,57 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 
 export function FomoSection() {
-  return (
-    <section className="relative overflow-hidden px-6 py-32 md:px-12 md:py-40 lg:px-24">
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  const reduceMotion = useReducedMotion();
 
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    if (reduceMotion) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setInView(true);
+            // если хотим анимацию запускать только один раз — unobserve
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.4, // подстрой — 0.1 (раньше), 0.6 (позже)
+        root: null,
+        rootMargin: '0px',
+      },
+    );
+
+    observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
+  // Варианты initial/animate учитывают reduced-motion
+  const initialText = { opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 20 };
+  const finalText = { opacity: 1, y: 0 };
+
+  return (
+    <section
+      ref={ref}
+      className="relative overflow-hidden px-6 py-32 md:px-12 md:py-40 lg:px-24"
+    >
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -17,12 +62,12 @@ export function FomoSection() {
       />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
-
         <motion.p
           className="mb-12 text-3xl leading-tight text-black md:text-4xl lg:text-5xl"
           style={{ fontFamily: 'Geist, sans-serif', fontWeight: 300 }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={initialText}
+          // animate передаём только когда inView === true (иначе не сработает раньше времени)
+          animate={inView ? finalText : undefined}
           transition={{ duration: 0.6 }}
         >
           Ты можешь продолжать играть в финансовую рулетку или разобраться
@@ -31,8 +76,8 @@ export function FomoSection() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={initialText}
+          animate={inView ? finalText : undefined}
           transition={{ duration: 0.6, delay: 0.15 }}
         >
           <a
