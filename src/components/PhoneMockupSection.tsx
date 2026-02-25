@@ -283,11 +283,18 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
 
       <div className="sticky top-0 h-screen">
         <motion.div
-          className="flex h-full flex-col justify-between px-4 py-6 pt-[35%] sm:px-6"
+          className="flex h-full flex-col justify-between px-4 py-6 sm:px-6"
           initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.55, ease: easeOut }}
+          animate={{
+            paddingTop: activeIndex > 0 ? '35%' : '20%',
+          }}
+          transition={{
+            opacity: { duration: reduceMotion ? 0 : 0.55, ease: easeOut },
+            y: { duration: reduceMotion ? 0 : 0.55, ease: easeOut },
+            paddingTop: { duration: reduceMotion ? 0 : 0.4, ease: easeInOut },
+          }}
         >
           <div className="shrink-0 pt-1 pb-3 text-center">
             <p
@@ -339,6 +346,21 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                       {/* Badge + Icon */}
                       <div className="mb-3 flex items-center justify-center gap-1">
                         <AnimatePresence mode="wait">
+                          <motion.div
+                            key={`icon-${activeIndex}`}
+                            className="flex h-8 w-8 items-center justify-center"
+                            initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.2, ease: 'backOut' }}
+                          >
+                            <ActiveIcon
+                              style={{ width: '12px', height: '12px', color: '#c20000' }}
+                              strokeWidth={2.25}
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                        <AnimatePresence mode="wait">
                           <motion.span
                             key={`badge-${activeIndex}`}
                             className="inline-block px-2 py-1.5 text-center font-extrabold tracking-[0.12em] uppercase"
@@ -355,24 +377,8 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                             {items[activeIndex]?.badge}
                           </motion.span>
                         </AnimatePresence>
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={`icon-${activeIndex}`}
-                            className="flex h-8 w-8 items-center justify-center"
-                            initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
-                            transition={{ duration: reduceMotion ? 0 : 0.2, ease: 'backOut' }}
-                          >
-                            <ActiveIcon
-                              style={{ width: '12px', height: '12px', color: '#c20000' }}
-                              strokeWidth={2.25}
-                            />
-                          </motion.div>
-                        </AnimatePresence>
                       </div>
 
-                      {/* Разделитель */}
                       <div
                         className="mb-3 h-0.5"
                         style={{
@@ -551,7 +557,6 @@ export function PhoneMockupSection() {
 
   return (
     <section className="relative bg-white pb-16 md:py-24">
-      {/* Фоновые декорации */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0"
