@@ -195,7 +195,6 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: { activeIndex: number; s
   );
 }
 
-/* ── Pin count: first 4 items are shown step-by-step while section is pinned ── */
 const PIN_COUNT = 5;
 
 function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
@@ -302,11 +301,15 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                   height: '100%',
                   paddingTop: '20px',
                   paddingBottom: '60px',
+                  scale: 1,
+                  opacity: 1,
                 }
               : {
                   top: '0px',
                   alignItems: showChrome ? 'center' : 'flex-end',
                   height: '100%',
+                  scale: activeIndex === PIN_COUNT - 1 ? 0.98 : 1,
+                  opacity: 1,
                 }
           }
           transition={
@@ -315,11 +318,19 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                   duration: reduceMotion ? 0 : 0.45,
                   ease: easeInOut,
                   delay: reduceMotion ? 0 : 0.25,
+                  top: { duration: reduceMotion ? 0 : 0.45 },
+                  alignItems: { duration: reduceMotion ? 0 : 0.35, delay: reduceMotion ? 0 : 0.1 },
+                  paddingTop: { duration: reduceMotion ? 0 : 0.45 },
+                  paddingBottom: { duration: reduceMotion ? 0 : 0.45 },
+                  scale: { duration: reduceMotion ? 0 : 0.35, ease: easeOut },
                 }
               : {
                   duration: reduceMotion ? 0 : 0.45,
                   ease: easeInOut,
                   delay: 0.15,
+                  top: { duration: reduceMotion ? 0 : 0.4, delay: 0.15 },
+                  alignItems: { duration: reduceMotion ? 0 : 0.35, delay: reduceMotion ? 0 : 0.2 },
+                  scale: { duration: reduceMotion ? 0 : 0.3, ease: easeOut, delay: 0.1 },
                 }
           }
         >
