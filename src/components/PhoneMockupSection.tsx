@@ -78,7 +78,7 @@ function PhoneMockup({ activeIndex, size = 'desktop' }: PhoneMockupProps) {
   return (
     <div
       className={`relative shrink-0 ${isMobile ? '[@media(min-width:450px)]:w-[min(140px,38vw)]!' : ''}`}
-      style={{ width: isMobile ? 'min(326px, 47vw)' : 'clamp(200px, 26vw, 310px)' }}
+      style={{ width: isMobile ? 'min(326px, 42vw)' : 'clamp(200px, 26vw, 310px)' }}
     >
       {/* Glow */}
       <div
@@ -320,12 +320,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         ))}
       </div>
 
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/*
-          Заменяем motion animate paddingTop → CSS transition на paddingTop.
-          motion animate на layout-свойствах вызывает reflow на каждый кадр.
-          CSS transition — только composite-слой, намного дешевле.
-        */}
+      <div className="sticky top-0 h-screen">
         <div
           className="flex h-full flex-col px-4 py-6 sm:px-6"
           style={{
@@ -373,8 +368,8 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                       style={{ background: 'linear-gradient(180deg,#c20000 0%,transparent 100%)' }}
                     />
 
-                    <div className="py-5 pr-2 pl-3">
-                      <div className="mb-3 flex items-center gap-1">
+                    <div className="py-5 pr-2 pl-2">
+                      <div className="mb-3 flex items-center">
                         <AnimatePresence mode="wait" initial={false}>
                           <motion.div
                             key={`icon-${activeIndex}`}
@@ -384,15 +379,15 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                             exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
                             transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'backOut' }}
                           >
-                            <ActiveIcon style={{ width: 12, height: 12, color: '#c20000' }} strokeWidth={2.25} />
+                            <ActiveIcon style={{ width: 20, height: 20, color: '#c20000' }} strokeWidth={2.25} />
                           </motion.div>
                         </AnimatePresence>
 
                         <AnimatePresence mode="wait" initial={false}>
                           <motion.span
                             key={`badge-${activeIndex}`}
-                            className="inline-block min-w-[120px] px-2 py-1.5 font-extrabold tracking-[0.12em] uppercase"
-                            style={{ color: '#c20000', fontFamily: 'Geist,sans-serif', fontSize: 'clamp(9px,1.8vw,11px)' }}
+                            className="inline-block min-w-[120px] py-1.5 font-extrabold tracking-[0.12em] text-left uppercase"
+                            style={{ color: '#c20000', fontFamily: 'Geist,sans-serif', fontSize: 'clamp(10px,1.8vw,11px)' }}
                             initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0 }}
