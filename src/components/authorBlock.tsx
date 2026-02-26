@@ -112,7 +112,7 @@ export function AuthorBlock() {
         ))}
       </div>
 
-      <div className="relative z-10 container mx-auto max-w-7xl px-6">
+      <div className="relative z-10 container mx-auto max-w-7xl [@media(min-width:500px)]:px-6">
 
         <motion.div
           className="mb-8 text-center sm:mb-16"
@@ -140,13 +140,13 @@ export function AuthorBlock() {
           >
 
             <div
-              className="md:text-10xl absolute top-14 -left-6 -translate-y-1/2 text-9xl font-thin text-white/20 lg:left-1/4"
+              className="absolute top-14 -left-6 -translate-y-1/2 text-9xl font-thin text-white/20 lg:left-1/4 [@media(max-width:500px)]:-left-3 [@media(max-width:500px)]:z-1"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
               (
             </div>
 
-            <div className="relative ml-auto aspect-3/4 max-w-md lg:mx-auto">
+            <div className="relative aspect-3/4 lg:mx-auto [@media(max-width:500px)]:w-full [@media(min-width:500px)]:ml-auto [@media(min-width:500px)]:max-w-md">
 
               <div
                 className="absolute top-6 left-[2%] z-20 text-sm font-light tracking-[0.25em] text-white sm:left-6 sm:text-xs"
@@ -203,7 +203,7 @@ export function AuthorBlock() {
             </div>
 
             <div
-              className="absolute top-14 -right-6 -translate-y-1/2 text-9xl font-thin text-white/20 lg:right-1/4"
+              className="absolute top-14 -right-6 -translate-y-1/2 text-9xl font-thin text-white/20 lg:right-1/4 [@media(max-width:500px)]:-right-3"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
               )

@@ -330,17 +330,25 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
         >
           {/* Heading */}
           <div className="shrink-0 pb-3 text-center">
-            <p
-              className="text-3xl leading-tight font-bold text-black"
-              style={{ fontFamily: 'Geist,sans-serif' }}
+            <h2
+              className="mt-2 mb-6 text-3xl leading-tight font-bold text-black md:text-4xl lg:text-5xl"
+              style={{ fontFamily: 'Geist, sans-serif' }}
             >
               Что вы получите для
               {' '}
-              <span className="inline-block rounded-sm px-1" style={{ color: '#c20000' }}>
-                защиты капитала
+              <span className="relative inline-block">
+                <span className="relative z-10">защиты капитала</span>
+                <motion.span
+                  className="absolute bottom-0 left-0 h-4 w-full bg-[#c20000]/20"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  style={{ transformOrigin: 'left' }}
+                />
               </span>
               ?
-            </p>
+            </h2>
           </div>
 
           {/* Card + Phone */}
@@ -368,8 +376,8 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                       style={{ background: 'linear-gradient(180deg,#c20000 0%,transparent 100%)' }}
                     />
 
-                    <div className="py-5 pr-2 pl-2">
-                      <div className="mb-3 flex items-center">
+                    <div className="py-2.5 pr-2 pl-2">
+                      <div className="flex items-center">
                         <AnimatePresence mode="wait" initial={false}>
                           <motion.div
                             key={`icon-${activeIndex}`}
@@ -386,7 +394,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                         <AnimatePresence mode="wait" initial={false}>
                           <motion.span
                             key={`badge-${activeIndex}`}
-                            className="inline-block min-w-[120px] py-1.5 font-extrabold tracking-[0.12em] text-left uppercase"
+                            className="inline-block min-w-[120px] py-1.5 text-left font-extrabold tracking-[0.12em] uppercase"
                             style={{ color: '#c20000', fontFamily: 'Geist,sans-serif', fontSize: 'clamp(10px,1.8vw,11px)' }}
                             initial={{ opacity: 0, x: reduceMotion ? 0 : -6 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -399,7 +407,7 @@ function MobileSection({ reduceMotion }: { reduceMotion: boolean }) {
                       </div>
 
                       <div
-                        className="mb-3 h-0.5"
+                        className="mb-1.5 h-0.5"
                         style={{ background: 'linear-gradient(90deg,rgba(194,0,0,0.12) 0%,rgba(0,0,0,0.05) 60%,transparent 100%)' }}
                       />
 

@@ -29,19 +29,19 @@ export function OldSolutionsSection() {
       name: 'Финтех-платформы',
       subtitle: 'Wise, Revolut',
       risk: 'Усиление мониторинга по сотням параметров (от device fingerprinting до частоты платежей). Ошибка в сумме может привести к блокировке капитала до 60 дней.',
-      icon: <Image src={Revolut} className="size-5 invert" alt="Revolut" width={40} height={40} />,
+      icon: <Image src={Revolut} className="size-7 invert" alt="Revolut" width={40} height={40} />,
     },
     {
       name: 'P2P-рынок',
       subtitle: 'Риски цепочек',
       risk: 'Схемы «треугольник» и чарджбэки эволюционировали. Получение средств от непроверенного лица в Европе — риск блокировки и уголовного дела.',
-      icon: <Repeat className="size-5 text-white" />,
+      icon: <Repeat className="size-7 text-white" />,
     },
     {
       name: 'SWIFT-переводы',
       subtitle: 'Банковские каналы',
       risk: 'Перевод незнакомому контрагенту при суммах от $10,000 — один из основных триггеров для запросов источника средств и заморозок капитала.',
-      icon: <Landmark className="size-5 text-white" />,
+      icon: <Landmark className="size-7 text-white" />,
     },
   ];
 
@@ -247,13 +247,13 @@ export function OldSolutionsSection() {
 
                 <div className="mb-3 flex items-center gap-4">
                   <div className="rounded-xl border border-[#222] bg-[#c20000] p-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-black/15">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm">
                       {solution.icon}
                     </div>
                   </div>
                   <div>
                     <div className="text-lg font-extrabold text-[#c20000]">{solution.name}</div>
-                    <div className="mt-1 inline-block rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
+                    <div className="mt-1 inline-block rounded-2xl bg-[#7d1212] px-3 py-1 text-center text-xs font-semibold text-white">
                       {solution.subtitle}
                     </div>
                   </div>
