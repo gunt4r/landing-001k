@@ -3,7 +3,8 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/libs/I18nRouting';
-import '@/styles/global.css';
+import Script from 'next/script';
+import '@/styles/global.css'
 
 export const metadata: Metadata = {
   icons: {
@@ -66,6 +67,11 @@ export default async function RootLayout(props: {
         <NextIntlClientProvider>
           {props.children}
         </NextIntlClientProvider>
+        <Script
+          src="//fbstore.sendpulse.com/loader.js"
+          data-sp-widget-id="ad9888d9-2f1a-47ab-9b97-690ef081d494"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
